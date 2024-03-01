@@ -1,0 +1,6 @@
+*.RData
+*.gz
+*.fastq
+*.qza
+*.biom
+*.zip
