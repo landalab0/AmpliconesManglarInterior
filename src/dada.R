@@ -79,11 +79,15 @@ combined_data <- rbind(out1_with_percentage, out2_with_percentage, out3_with_per
 
 # Ahora puedes crear un boxplot con ggplot2 o la base de gráficos en R
 library(ggplot2)
-ggplot(combined_data, aes(x = version, y = percentage, fill = version)) +
+boxplot_versions <- ggplot(combined_data, aes(x = version, y = percentage, fill = version)) +
   geom_boxplot() +
   labs(x = "Filter version", y = "Percentage of reads after filter") +
   theme_bw() +
   scale_fill_brewer(palette = "Set2")
+
+png("results/plots/summary/04.boxplot_trunc_versions.png")
+boxplot_versions
+dev.off()
 
 #Save info of final version
 write.table(out1, file="results/03.Dada2/Dada_clean.tsv", quote=F, sep="\t",col.names=NA) # Table with the totals before and after cleaning
@@ -160,7 +164,7 @@ write.table(track, "results/03.Dada2/Seqs_lost_in_ASVs_processing.tsv", col.name
 
 # Create a quick assesment of sequences lost throughout the process
 pdf("results/03.Dada2/preview_reads_passing_ASV_processing.pdf")
-
+#png("results/plots/summary/05.ASV_secuences_process.png") #to summary
 # And same thing for the percentage remaining
 matplot(t(track[,-5]/track[,1]*100),type='l',xaxt='n', main="Sequences remaining after each step  - R1 (%)", xlab="Step", ylab=" Percentage of Sequences remaining")
 axis(1,at=1:ncol(track[,-5]),labels=colnames(track[,-5]))

@@ -83,6 +83,11 @@ pdf("results/plots/03.diversity/03.Rarefaction_curves_ranacapa.pdf")
 acumulation_curves_plot
 dev.off()
 
+##png for summary
+png("results/plots/summary/06.acumulation_curves.png")
+acumulation_curves_plot
+dev.off()
+
 print(acumulation_curves_plot)
 
 
@@ -112,6 +117,12 @@ dev.off()
 pdf("results/plots/03.diversity/05.NMDS_Bray_Location.pdf")
 nmds_bray_plot
 dev.off()
+
+##png for summary
+png("results/plots/summary/07.nmds_bray_location.png")
+nmds_bray_plot
+dev.off()
+
 
 #Weigthed UniFrac take relative abundance and it is less sensitive to sample size 
 
