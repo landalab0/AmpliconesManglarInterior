@@ -1,49 +1,49 @@
-sample-id	Sample	Sample_type	Date	Location    profundidad cm
-S1A015	S1A015	Sediment	"28/09/2023"	Dique Miguelito    0-15
-S1A1530	S1A1530	Sediment	"28/09/2023"	Dique Miguelito    15-30
-S1A3050	S1A3050	Sediment	"28/09/2023"	Dique Miguelito    30-50
-S1A5075	S1A5075	Sediment	"28/09/2023"	Dique Miguelito    50-75
-S1B07	S1B07	Sediment	"28/09/2023"	Dique Miguelito    0-7
-S1B2230	S1B2230	Sediment	"28/09/2023"	Dique Miguelito    22-30
-S1B3040	S1B3040	Sediment	"28/09/2023"	Dique Miguelito    40-30
-S1B6575	S1B6575	Sediment	"28/09/2023"	Dique Miguelito    65-75
-S2A1727	S2A1727	Sediment	"28/09/2023"	Dique Miguelito    17-27
-S2A3545	S2A3545	Sediment	"28/09/2023"	Dique Miguelito    35-45
-S2A515	S2A515	Sediment	"28/09/2023"	Dique Miguelito    5-15
-S2A5060	S2A5060	Sediment	"28/09/2023"	Dique Miguelito    50-60
-S2B07	S2B07	Sediment	"28/09/2023"	Dique Miguelito    0-7
-S2B1522	S2B1522	Sediment	"28/09/2023"	Dique Miguelito    15-22
-S2B3040	S2B3040	Sediment	"28/09/2023"	Dique Miguelito    30-40
-S2B5565	S2B5565	Sediment	"28/09/2023"	Dique Miguelito    55-65
-S3A07	S3A07	Sediment	"28/09/2023"	Dique Miguelito    0-7
-S3A1522	S3A1522	Sediment	"28/09/2023"	Dique Miguelito    15-22
-S3A3040	S3A3040	Sediment	"28/09/2023"	Dique Miguelito    30-40
-S3A6070	S3A6070	Sediment	"28/09/2023"	Dique Miguelito    60-70
-S3B2030	S3B2030	Sediment	"28/09/2023"	Dique Miguelito    20-30
-S3B3545	S3B3545	Sediment	"28/09/2023"	Dique Miguelito    35-45
-S3B6070	S3B6070	Sediment	"28/09/2023"	Dique Miguelito    60-70
-S4B07	S4B07	Sediment	"29/09/2023"	La Piedad    0-7
-S4B1522	S4B1522	Sediment	"29/09/2023"	La Piedad    15-22
-S4B3040	S4B3040	Sediment	"29/09/2023"	La Piedad    30-40
-S4B5565	S4B5565	Sediment	"29/09/2023"	La Piedad    55-65
-S5A07	S5A07	Sediment	"29/09/2023"	La Piedad    0-7
-S5A1522	S5A1522	Sediment	"29/09/2023"	La Piedad    15-22
-S5A3040	S5A3040	Sediment	"29/09/2023"	La Piedad    30-40
-S5A5565	S5A5565	Sediment	"29/09/2023"	La Piedad    55-65
-S5B07	S5B07	Sediment	"29/09/2023"	La Piedad    0-7
-S5B1522	S5B1522	Sediment	"29/09/2023"	La Piedad    15-22
-S5B3040	S5B3040	Sediment	"29/09/2023"	La Piedad    30-40
-S5B5060	S5B5060	Sediment	"29/09/2023"	La Piedad    50-60
-S6A07	S6A07	Sediment	"30/09/2023"	El Cacahuate    0-7
-S6A1522	S6A1522	Sediment	"30/09/2023"	El Cacahuate    15-22
-S6A3040	S6A3040	Sediment	"30/09/2023"	El Cacahuate    30-40
-S6B07	S6B07	Sediment	"30/09/2023"	El Cacahuate    0-7
-S6B1522	S6B1522	Sediment	"30/09/2023"	El Cacahuate    15-22
-S6B3040	S6B3040	Sediment	"30/09/2023"	El Cacahuate    30-40
-S7A07	S7A07	Sediment	"30/09/2023"	El Cacahuate    0-7
-S7A1522	S7A1522	Sediment	"30/09/2023"	El Cacahuate    15-22
-S7A3040	S7A3040	Sediment	"30/09/2023"	El Cacahuate    30-40
-S7A5060	S7A5060	Sediment	"30/09/2023"	El Cacahuate    50-60
-S7B07	S7B07	Sediment	"30/09/2023"	El Cacahuate    0-7
-S7B1522	S7B1522	Sediment	"30/09/2023"	El Cacahuate    15-22
-S7B5060	S7B5060	Sediment	"30/09/2023"	El Cacahuate    50-60
+sample-id	Sample	Sample_type	Date	Location    
+S1A015	S1A015	Sediment	"28/09/2023"	Dique Miguelito
+S1A1530	S1A1530	Sediment	"28/09/2023"	Dique Miguelito
+S1A3050	S1A3050	Sediment	"28/09/2023"	Dique Miguelito
+S1A5075	S1A5075	Sediment	"28/09/2023"	Dique Miguelito
+S1B07	S1B07	Sediment	"28/09/2023"	Dique Miguelito
+S1B2230	S1B2230	Sediment	"28/09/2023"	Dique Miguelito
+S1B3040	S1B3040	Sediment	"28/09/2023"	Dique Miguelito
+S1B6575	S1B6575	Sediment	"28/09/2023"	Dique Miguelito
+S2A1727	S2A1727	Sediment	"28/09/2023"	Dique Miguelito
+S2A3545	S2A3545	Sediment	"28/09/2023"	Dique Miguelito
+S2A515	S2A515	Sediment	"28/09/2023"	Dique Miguelito
+S2A5060	S2A5060	Sediment	"28/09/2023"	Dique Miguelito
+S2B07	S2B07	Sediment	"28/09/2023"	Dique Miguelito
+S2B1522	S2B1522	Sediment	"28/09/2023"	Dique Miguelito
+S2B3040	S2B3040	Sediment	"28/09/2023"	Dique Miguelito
+S2B5565	S2B5565	Sediment	"28/09/2023"	Dique Miguelito
+S3A07	S3A07	Sediment	"28/09/2023"	Dique Miguelito
+S3A1522	S3A1522	Sediment	"28/09/2023"	Dique Miguelito
+S3A3040	S3A3040	Sediment	"28/09/2023"	Dique Miguelito
+S3A6070	S3A6070	Sediment	"28/09/2023"	Dique Miguelito
+S3B2030	S3B2030	Sediment	"28/09/2023"	Dique Miguelito
+S3B3545	S3B3545	Sediment	"28/09/2023"	Dique Miguelito
+S3B6070	S3B6070	Sediment	"28/09/2023"	Dique Miguelito
+S4B07	S4B07	Sediment	"29/09/2023"	La Piedad
+S4B1522	S4B1522	Sediment	"29/09/2023"	La Piedad
+S4B3040	S4B3040	Sediment	"29/09/2023"	La Piedad
+S4B5565	S4B5565	Sediment	"29/09/2023"	La Piedad
+S5A07	S5A07	Sediment	"29/09/2023"	La Piedad
+S5A1522	S5A1522	Sediment	"29/09/2023"	La Piedad
+S5A3040	S5A3040	Sediment	"29/09/2023"	La Piedad
+S5A5565	S5A5565	Sediment	"29/09/2023"	La Piedad
+S5B07	S5B07	Sediment	"29/09/2023"	La Piedad
+S5B1522	S5B1522	Sediment	"29/09/2023"	La Piedad
+S5B3040	S5B3040	Sediment	"29/09/2023"	La Piedad
+S5B5060	S5B5060	Sediment	"29/09/2023"	La Piedad
+S6A07	S6A07	Sediment	"30/09/2023"	El Cacahuate
+S6A1522	S6A1522	Sediment	"30/09/2023"	El Cacahuate
+S6A3040	S6A3040	Sediment	"30/09/2023"	El Cacahuate
+S6B07	S6B07	Sediment	"30/09/2023"	El Cacahuate
+S6B1522	S6B1522	Sediment	"30/09/2023"	El Cacahuate
+S6B3040	S6B3040	Sediment	"30/09/2023"	El Cacahuate
+S7A07	S7A07	Sediment	"30/09/2023"	El Cacahuate
+S7A1522	S7A1522	Sediment	"30/09/2023"	El Cacahuate
+S7A3040	S7A3040	Sediment	"30/09/2023"	El Cacahuate
+S7A5060	S7A5060	Sediment	"30/09/2023"	El Cacahuate
+S7B07	S7B07	Sediment	"30/09/2023"	El Cacahuate
+S7B1522	S7B1522	Sediment	"30/09/2023"	El Cacahuate
+S7B5060	S7B5060	Sediment	"30/09/2023"	El Cacahuate
