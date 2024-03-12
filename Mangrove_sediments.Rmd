@@ -420,7 +420,7 @@ load packages
 load("Postprocess.RData")
 ```
 
-```{r}
+```{r include=FALSE}
 #Define package vectors
 cran_packages <- c("knitr", "qtl", "bookdown", "magrittr", "plyr", "ggplot2",
                    "grid","gridExtra", "tidyverse", "devtools", "dplyr",
@@ -433,7 +433,7 @@ cran_packages <- c("knitr", "qtl", "bookdown", "magrittr", "plyr", "ggplot2",
 bioc_packages <- c("airway", "phyloseq", "dada2", "DECIPHER", "phangorn",
                    "ggpubr","DESeq2",
                    "genefilter", "philr", "GenomeInfoDb", "microbiome",
-                   "metagenomeSeq", "mia",
+                   "metagenomeSeq", "mia", "curatedMetagenomicData",
                    "ANCOMBC","microbiomeMarker")
 
 git_packages <- c("btools", "fantaxtic", "ampvis2", "tsnemicrobiota",
@@ -525,6 +525,26 @@ dev.off()
 print(acumulation_curves_plot)
 ```
 
+
+```
+#### ANOSIM
+#extract metadata
+metadata <- data.frame(phyloseq::sample_data(physeq_qiime2),
+           check.names = FALSE)
+#get significant difference between location with anosim
+anosim_location <- anosim(x= as.data.frame(t(otu_table(physeq_qiime2))),
+       grouping = metadata$Location,
+       permutations = 9999, distance = "bray")
+#get values
+anosim_significance <- anosim_location$signif
+anosim_statistic  <- anosim_location$statistic
+```
+
+```{r}
+anosim_location
+```
+
+
 ```
 # Bray NMDS 
 nmds_bray <- ordinate(physeq_qiime2, method = "NMDS", distance = "bray")
@@ -536,7 +556,7 @@ stressplot(nmds_bray)
 
 nmds_bray_plot <- plot_ordination(physeq_qiime2, nmds_bray, label = "Sample",
                            color = "Location", shape = "Location") + theme_bw() + 
-  labs(col = "Location") + labs(title="NMDS, Bray-Curtis distance") +
+  labs(col = "Location") + labs(title="NMDS, Bray-Curtis distance\nANOSIM Location: R=0.3246, p=0.0001, Permutations=9999") +
   geom_point(size=3) + theme_bw() 
 
 nmds_bray_plot <- nmds_bray_plot +
@@ -561,6 +581,7 @@ print(stressplot(nmds_bray))
 ```{r}
 print(nmds_bray_plot)
 ```
+
 ```
 #Weigthed UniFrac take relative abundance and it is less sensitive to sample size 
 
@@ -571,11 +592,18 @@ var_stress_nmds_wu
 
 stressplot(nmds_wunifrac)# checks that the fit is good
 #nmds_wunifrac$points
+```
 
+
+
+
+
+```
 # Weigthed UniFrac NMDS
 nmds_wu <- plot_ordination(physeq_qiime2, nmds_wunifrac, label = "Sample",
                            color = "Location", shape = "Location") + theme_bw() + 
-  labs(col = "Location") + labs(title="NMDS, Weighted UniFrac distance") +
+  labs(col = "Location") + 
+  labs(title="NMDS, Weighted UniFrac distance") +
   geom_point(size=3) + theme_bw() 
 
 nmds_wu <- nmds_wu +
@@ -596,22 +624,13 @@ dev.off()
 print(nmds_wu)
 ```
 
+
 ```
-#### ANOSIM
-#extract metadata
-metadata <- data.frame(phyloseq::sample_data(physeq_qiime2),
-           check.names = FALSE)
-#get significant difference between location with anosim
-anosim_location <- anosim(x= as.data.frame(t(otu_table(physeq_qiime2))),
-       grouping = metadata$Location,
-       permutations = 9999, distance = "bray")
-#get values
-anosim_significance <- anosim_location$signif
-anosim_statistic  <- anosim_location$statistic
+#Get diversity index
+diversity_all_index <- microbiome::alpha(physeq_qiime2, index = "all")
+#save table
+write.table(diversity_all_index, "results/05.postprocess/all_alpha_index.tsv", col.names=NA, sep="\t")
 ```
 
-```{r}
-anosim_location
-```
 
 

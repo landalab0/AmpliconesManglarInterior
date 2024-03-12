@@ -166,3 +166,14 @@ anosim_significance <- anosim_location$signif
 anosim_statistic  <- anosim_location$statistic
 anosim_location
 ####
+
+### Alpha Diversity
+### 0.4.4 Get all alpha index with microbiome global function
+diversity_all_index <- microbiome::alpha(physeq_qiime2, index = "all")
+all_index_table <- (diversity_all_index) %>%
+  kable(format = "html", col.names = colnames(diversity_all_index), digits = 2) %>%
+  kable_styling() %>%
+  kableExtra::scroll_box(width = "100%", height = "300px")
+typeof(all_index_table)
+#save table
+write.table(diversity_all_index, "results/05.postprocess/all_alpha_index.tsv", col.names=NA, sep="\t")
