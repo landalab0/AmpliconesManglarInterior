@@ -445,7 +445,7 @@ sapply(c(cran_packages, bioc_packages, git_packages), require, character.only = 
 
 ```
 
-Import data to R from qiime and check prevalence to filter data 
+### Import data to R from qiime and check prevalence to filter data 
 
 ```
 
@@ -454,7 +454,7 @@ physeq_qiime2 <- qza_to_phyloseq(
   features = "results/04.qiime/ASV_table_filter_aemc_freq94_1minsamp.qza",
   tree = "results/04.qiime/rooted-tree-fasttree2.qza",
   taxonomy = "results/04.qiime/taxonomy.qza",
-  metadata = "data/metadata.tsv")
+  metadata = "data/Metadatos_Rio_San_Pedro_actualizados.tsv")
 
 ```
 
@@ -494,6 +494,7 @@ dev.off()
 knitr::include_graphics("results/plots/03.diversity/01.Prevalence_Phylum_and_genus.pdf")
 ```
 
+### Check sample effort
 
 ```
 ## 3.1 FASTER rarefaction curves with Vegan
@@ -521,10 +522,26 @@ acumulation_curves_plot
 dev.off()
 ```
 
-```{r}
-print(acumulation_curves_plot)
+```{ number_samples}
+library(ggplot2)
+
+freq_samples <- plot_frequencies(sample_data(physeq_qiime2), "Site", "Depth") + theme_bw()
+pdf("results/plots/03.diversity/Number_of_Samples.pdf")
+freq_samples <- ggplot(freq_samples$data, aes(x = Groups, y = n, fill = Factor)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Number of samples of Site and Depth") +
+  theme_bw() + scale_color_brewer(palette = "Set2") + scale_fill_brewer(palette = "Set2")
+dev.off()
+freq_samples
 ```
 
+```{r}
+freq_samples
+```
+
+### Beta diversity
+
+#### Bray-curtis
 
 ```
 #### ANOSIM
@@ -582,6 +599,8 @@ print(stressplot(nmds_bray))
 print(nmds_bray_plot)
 ```
 
+#### Weighted Unifraq
+
 ```
 #Weigthed UniFrac take relative abundance and it is less sensitive to sample size 
 
@@ -593,10 +612,6 @@ var_stress_nmds_wu
 stressplot(nmds_wunifrac)# checks that the fit is good
 #nmds_wunifrac$points
 ```
-
-
-
-
 
 ```
 # Weigthed UniFrac NMDS
@@ -624,6 +639,73 @@ dev.off()
 print(nmds_wu)
 ```
 
+#### Bray-Curtis with new metadata
+
+```
+#extract metadata
+metadata <- data.frame(phyloseq::sample_data(physeq_qiime2),
+           check.names = FALSE)
+```
+
+##### Depth
+```
+
+#get significant difference between Depth with anosim
+anosim_depth <- anosim(x= as.data.frame(t(otu_table(physeq_qiime2))),
+       grouping = metadata$Depth,
+       permutations = 9999, distance = "bray")
+```
+
+```{r}
+anosim_depth
+```
+
+```
+nmds_bray_depth_plot <- plot_ordination(physeq_qiime2, nmds_bray, label = "Sample",
+                           color = "Depth", shape = "Location") + theme_bw() + 
+  labs(col = "Depth") + labs(title="NMDS, Bray-Curtis distance\nANOSIM Depth: R=0.1356, p=0.0045, Permutations=9999") +
+  geom_point(size=3) + theme_bw() 
+
+nmds_bray_depth_plot <- nmds_bray_depth_plot +
+  annotate("text", x = Inf, y = -Inf, label = paste("Stress:", var_stress_nmds_bray),
+           hjust = 2.1, vjust = -1.9, size = 4)
+```
+
+```{r}
+nmds_bray_depth_plot
+```
+##### Site
+
+```
+
+#get significant difference between Depth with anosim
+anosim_site <- anosim(x= as.data.frame(t(otu_table(physeq_qiime2))),
+       grouping = metadata$Site,
+       permutations = 9999, distance = "bray")
+```
+
+```{r}
+anosim_site
+```
+
+```
+nmds_bray_site_plot <- plot_ordination(physeq_qiime2, nmds_bray, label = "Sample",
+                           color = "Site", shape = "Depth") + theme_bw() + 
+  labs(col = "site") + labs(title="NMDS, Bray-Curtis distance\nANOSIM Site: R=0.4105, p=0.0001, Permutations=9999") +
+  geom_point(size=3) + theme_bw() 
+
+nmds_bray_site_plot <- nmds_bray_site_plot +
+  annotate("text", x = Inf, y = -Inf, label = paste("Stress:", var_stress_nmds_bray),
+           hjust = 2.1, vjust = -1.9, size = 4)
+```
+
+```{r}
+nmds_bray_site_plot
+```
+
+
+
+### Alpha diversity
 
 ```
 #Get diversity index
@@ -631,6 +713,105 @@ diversity_all_index <- microbiome::alpha(physeq_qiime2, index = "all")
 #save table
 write.table(diversity_all_index, "results/05.postprocess/all_alpha_index.tsv", col.names=NA, sep="\t")
 ```
+
+#### obs and shannon
+
+```{r}
+
+
+### Get simple alpha diversity plots by location, practices, and both
+
+alpha_depth_plot <- plot_richness(physeq_qiime2, color = "Depth", x = "Depth", measures = c("Observed", "Shannon")) +
+  geom_boxplot(aes(fill = Depth), alpha=.7) + scale_color_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") + theme_bw()
+
+
+
+alpha_location_plot <- plot_richness(physeq_qiime2, color = "Location", x = "Location", measures = c("Observed", "Shannon")) +
+  geom_boxplot(aes(fill = Location), alpha=.7) + scale_color_brewer(palette = "Set2") +
+  scale_fill_brewer(palette = "Set2") +theme_bw() + theme(axis.text.x  = element_text(angle = 10))
+
+
+alpha_site_plot <- plot_richness(physeq_qiime2, color = "Site", x = "Site", measures = c("Observed", "Shannon")) +
+  geom_boxplot(aes(fill = Site), alpha=.7) + scale_color_brewer(palette = "Set1") +
+  scale_fill_brewer(palette = "Set1") +theme_bw() + theme(axis.text.x  = element_text(angle = 10))
+
+
+alpha_site_and_depth_plot <-plot_richness(physeq_qiime2, color = "Site", x = "Site", measures = c("Observed", "Shannon")) +
+  geom_boxplot(aes(fill = Depth), alpha=.7) + scale_color_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") + theme_bw() + theme(axis.text.x  = element_text(angle = 10))
+
+```
+
+```{r}
+alpha_depth_plot
+```
+
+```{r}
+alpha_location_plot
+```
+
+```{r}
+alpha_site_plot
+```
+
+
+```{r}
+alpha_site_and_depth_plot
+```
+
+
+#### Get Observed, shannon, Faith and Pielou
+
+```
+# Estimate faith diversity
+alpha_pd <- estimate_pd(physeq_qiime2)
+
+#Calculating Faiths PD-index...
+alpha_pd
+
+### get specific index diversity with metadata 
+physeq_with_metadata <- meta(physeq_qiime2)
+
+#Add specific diversity index to metadata
+physeq_with_metadata$Shannon <- diversity_all_index$diversity_shannon
+physeq_with_metadata$Observed <- diversity_all_index$observed
+physeq_with_metadata$Pielou <- diversity_all_index$evenness_pielou
+physeq_with_metadata$Faith <- alpha_pd$PD #faith
+
+#save table
+write.table(as.data.frame(physeq_with_metadata), "results/05.postprocess/metadata_with_specific_alpha_index_table.tsv", sep="\t")
+
+```
+
+```{r}
+meta_div <- as.data.frame(physeq_with_metadata)
+sites <- unique(meta_div$Site)
+sites_par <- combn(seq_along(sites), 2, simplify = FALSE, FUN = function(i)sites[i])
+# Imprimimos en pantalla el resultado
+print(sites_par)
+
+#grafico de violin con Shannon
+sites_shannon <- ggboxplot(physeq_with_metadata, x = "Site", y = "Shannon",
+                           fill = "Site") + scale_color_brewer(palette  = "Set1")+ 
+                scale_fill_brewer(palette  = "Set1")+ theme_bw()
+
+sites_shannon
+```
+
+
+```{r}
+
+sites_shannon_sig <- sites_shannon + stat_compare_means(comparisons = sites_par)
+sites_shannon_sig
+
+```
+
+
+
+
+
+
 
 
 
