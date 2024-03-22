@@ -521,6 +521,18 @@ pdf("results/plots/03.diversity/03.Rarefaction_curves_ranacapa.pdf")
 acumulation_curves_plot
 dev.off()
 ```
+```
+acumulation_curves
+```
+
+```
+library(ranacapa)
+acumulation_curves
+acumulation_curves_plot <- acumulation_curves + facet_wrap(~Location) +
+  labs(title="Accumulative curves") + theme_bw()
+acumulation_curves_plot
+```
+
 
 ```{ number_samples}
 library(ggplot2)
@@ -716,7 +728,7 @@ write.table(diversity_all_index, "results/05.postprocess/all_alpha_index.tsv", c
 
 #### obs and shannon
 
-```{r}
+```
 
 
 ### Get simple alpha diversity plots by location, practices, and both
@@ -788,10 +800,10 @@ write.table(as.data.frame(physeq_with_metadata), "results/05.postprocess/metadat
 meta_div <- as.data.frame(physeq_with_metadata)
 sites <- unique(meta_div$Site)
 sites_par <- combn(seq_along(sites), 2, simplify = FALSE, FUN = function(i)sites[i])
-# Imprimimos en pantalla el resultado
+
 print(sites_par)
 
-#grafico de violin con Shannon
+
 sites_shannon <- ggboxplot(physeq_with_metadata, x = "Site", y = "Shannon",
                            fill = "Site") + scale_color_brewer(palette  = "Set1")+ 
                 scale_fill_brewer(palette  = "Set1")+ theme_bw()
@@ -807,9 +819,73 @@ sites_shannon_sig
 
 ```
 
+```{r}
+## Abundances
+### 0.6  abundances
+library(ampvis2)
+# Necesitamos extraer la tabla de read counts y la tabla de taxonomía del objeto physeq_filter_phyla
+# Extraemos las tablas
+otu_table_ampvis <- data.frame(OTU = rownames(phyloseq::otu_table(physeq_qiime2)@.Data),
+                               phyloseq::otu_table(physeq_qiime2)@.Data,
+                               phyloseq::tax_table(physeq_qiime2)@.Data,
+                               check.names = FALSE
+)
+```
+
+```{r}
+# Metadada
+meta_data_ampvis <- data.frame(phyloseq::sample_data(physeq_qiime2),
+                               check.names = FALSE
+)
+#  cambiamos el indice por una columna que se llame SampleID
+
+meta_data_ampvis <- meta_data_ampvis %>% rownames_to_column(var = "SampleID")
+```
+
+```{r}
+# ampvis object
+av2 <- amp_load(otu_table_ampvis, meta_data_ampvis)
+```
+
+```{r}
+#heatmap abundances
+
+ampv_heatmap_abundances_genus <- amp_heatmap(av2,
+            group_by = "Site",
+            facet_by = "Location",
+            plot_values = TRUE,
+            tax_show = 20,
+            tax_aggregate = "Genus",
+            #tax_add = "Family",
+            plot_colorscale = "log10",
+            plot_legendbreaks = c(1, 5, 5),
+            color_vector = c("white","deepskyblue3","magenta3")
+)
+
+```
+
+```{r}
+ampv_heatmap_abundances_genus
+```
 
 
+```{r}
+ampv_heatmap_abundances_family <- amp_heatmap(av2,
+            group_by = "Site",
+            facet_by = "Location",
+            plot_values = TRUE,
+            tax_show = 20,
+            tax_aggregate = "Family",
+            tax_add = "Phylum",
+            plot_colorscale = "log10",
+            plot_legendbreaks = c(1, 5, 5),
+            color_vector = c("white","deepskyblue3","magenta3")
+)
+```
 
+```{r}
+ampv_heatmap_abundances_family
+```
 
 
 
