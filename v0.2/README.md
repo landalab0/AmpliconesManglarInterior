@@ -69,3 +69,32 @@ ps -ef | grep Rscript
 ps -f -p $(cat outs/03.dada2_PID.txt)
 ```
 
+### 05. Taxonomy assignment
+
+```bash
+mkdir -p results/04.qiime
+
+#Import dada R sequences and ASV table to QIIME2
+bash src/04.import_data_to_qiime2.sh 1> outs/04.import.out
+
+#Taxonomy classification
+nohup bash src/05.tax_assign.sh 1> outs/05.tax_assign.out 2> outs/05.tax_assign.error &
+#check progress
+echo $! > outs/05.tax_PID.txt
+ps -f -p $(cat outs/05.tax_PID.txt) 
+```
+
+### 06. Filters
+
+```bash
+bash src/06.filters.sh 1> outs/06.filters.out
+```
+
+### 07. Phylogeny
+
+```bash
+nohup bash src/07.phylogeny.sh 1> outs/07.phylogeny.out 2> outs/07.phylogeny.error &
+echo $! > outs/07.phylogeny_PID.txt
+ps -f -p $(cat outs/07.phylogeny_PID.txt)
+```
+

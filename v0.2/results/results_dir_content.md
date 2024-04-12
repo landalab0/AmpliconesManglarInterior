@@ -1,13 +1,13 @@
 results/:
-total 12K
-drwxrwxr-x 2 diana diana 4.0K Apr 11 11:57 02.cutadapt
+total 16K
+drwxrwxr-x 2 diana diana 4.0K Apr 11 12:01 02.cutadapt
 drwxrwxr-x 3 diana diana 4.0K Apr 11 11:10 03.Dada2
+drwxrwxr-x 2 diana diana 4.0K Apr 11 18:49 04.qiime
 drwxrwxr-x 2 diana diana 4.0K Apr 11 11:10 plots
--rw-rw-r-- 1 diana diana    0 Apr 11 12:00 results_dir_content.md
+-rw-rw-r-- 1 diana diana    0 Apr 11 19:44 results_dir_content.md
 
 results/02.cutadapt:
 total 6.5G
--rw-rw-r-- 1 diana diana 5.9K Apr 11 11:57 02.cutadapt_dir_content.md
 -rw-rw-r-- 1 diana diana  67M Apr 10 13:40 S1A015_1.fastq.gz
 -rw-rw-r-- 1 diana diana  80M Apr 10 13:40 S1A015_2.fastq.gz
 -rw-rw-r-- 1 diana diana  67M Apr 10 13:40 S1A1530_1.fastq.gz
@@ -214,6 +214,21 @@ total 2.8G
 -rw-rw-r-- 1 diana diana 31M Apr 10 16:33 S7B1522_R_filt.fastq.gz
 -rw-rw-r-- 1 diana diana 25M Apr 10 16:33 S7B5060_F_filt.fastq.gz
 -rw-rw-r-- 1 diana diana 23M Apr 10 16:33 S7B5060_R_filt.fastq.gz
+
+results/04.qiime:
+total 41M
+-rw-rw-r-- 1 diana diana 7.6M Apr 11 12:52 ASV_rep_seq.qza
+-rw-rw-r-- 1 diana diana  18M Apr 11 13:27 ASV_rep_seq.qzv
+-rw-rw-r-- 1 diana diana 580K Apr 11 18:49 ASV_rep_seq_filters.qza
+-rw-rw-r-- 1 diana diana 1.9M Apr 11 12:53 ASV_table.qza
+-rw-rw-r-- 1 diana diana 978K Apr 11 18:49 ASV_table.qzv
+-rw-rw-r-- 1 diana diana 746K Apr 11 18:49 ASV_table_filter_freq218.qza
+-rw-rw-r-- 1 diana diana 469K Apr 11 18:49 ASV_table_filter_freq218.qzv
+-rw-rw-r-- 1 diana diana 835K Apr 11 18:49 ASV_table_filter_freq218_aemc.qza
+-rw-rw-r-- 1 diana diana 547K Apr 11 18:49 ASV_table_filter_freq218_aemc.qzv
+-rw-rw-r-- 1 diana diana  170 Apr 11 19:08 asv_filters_info.tsv
+-rw-rw-r-- 1 diana diana 2.2M Apr 11 13:26 taxonomy.qza
+-rw-rw-r-- 1 diana diana 7.6M Apr 11 13:26 taxonomy.qzv
 
 results/plots:
 total 492K
