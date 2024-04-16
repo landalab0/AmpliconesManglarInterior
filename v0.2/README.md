@@ -98,3 +98,12 @@ echo $! > outs/07.phylogeny_PID.txt
 ps -f -p $(cat outs/07.phylogeny_PID.txt)
 ```
 
+### 08. Diversity
+
+check src/
+
+```bash
+
+nohup Rscript src/09.accumulative_curves.sh > outs/09.accumulative_curves.out 2> outs/09.accumulative_curves.error &
+
+```
