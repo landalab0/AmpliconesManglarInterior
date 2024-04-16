@@ -42,6 +42,8 @@ Combine: data/S3B2030_R1.fastq.gz
 Combine: data/S3B2030_R2.fastq.gz
 Combine: data/S3B3545_R1.fastq.gz
 Combine: data/S3B3545_R2.fastq.gz
+Combine: data/S3B515_R1.fastq.gz
+Combine: data/S3B515_R2.fastq.gz
 Combine: data/S3B6070_R1.fastq.gz
 Combine: data/S3B6070_R2.fastq.gz
 Combine: data/S4B07_R1.fastq.gz
@@ -80,6 +82,8 @@ Combine: data/S6B1522_R1.fastq.gz
 Combine: data/S6B1522_R2.fastq.gz
 Combine: data/S6B3040_R1.fastq.gz
 Combine: data/S6B3040_R2.fastq.gz
+Combine: data/S73040_R1.fastq.gz
+Combine: data/S73040_R2.fastq.gz
 Combine: data/S7A07_R1.fastq.gz
 Combine: data/S7A07_R2.fastq.gz
 Combine: data/S7A1522_R1.fastq.gz

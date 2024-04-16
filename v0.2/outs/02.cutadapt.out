@@ -1,11 +1,11 @@
-Wed Apr 10 13:40:43 MST 2024
+Tue Apr 16 12:51:15 MST 2024
 Run cutadapt to S1A015 sample
 cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S1A015_1.fastq.gz -p results/02.cutadapt/S1A015_2.fastq.gz data/S1A015_R1.fastq.gz data/S1A015_R2.fastq.gz 
 
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S1A015_1.fastq.gz -p results/02.cutadapt/S1A015_2.fastq.gz data/S1A015_R1.fastq.gz data/S1A015_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 4.07 s (12 µs/read; 5.05 M reads/minute).
+Finished in 4.34 s (13 µs/read; 4.74 M reads/minute).
 
 === Summary ===
 
@@ -136,7 +136,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S1A1530_1.fastq.gz -p results/02.cutadapt/S1A1530_2.fastq.gz data/S1A1530_R1.fastq.gz data/S1A1530_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 4.36 s (12 µs/read; 4.87 M reads/minute).
+Finished in 3.87 s (11 µs/read; 5.48 M reads/minute).
 
 === Summary ===
 
@@ -245,7 +245,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S1A3050_1.fastq.gz -p results/02.cutadapt/S1A3050_2.fastq.gz data/S1A3050_R1.fastq.gz data/S1A3050_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.25 s (13 µs/read; 4.69 M reads/minute).
+Finished in 2.82 s (11 µs/read; 5.39 M reads/minute).
 
 === Summary ===
 
@@ -335,7 +335,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S1A5075_1.fastq.gz -p results/02.cutadapt/S1A5075_2.fastq.gz data/S1A5075_R1.fastq.gz data/S1A5075_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.14 s (12 µs/read; 4.94 M reads/minute).
+Finished in 2.91 s (11 µs/read; 5.33 M reads/minute).
 
 === Summary ===
 
@@ -431,7 +431,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S1B07_1.fastq.gz -p results/02.cutadapt/S1B07_2.fastq.gz data/S1B07_R1.fastq.gz data/S1B07_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.81 s (12 µs/read; 5.06 M reads/minute).
+Finished in 3.58 s (11 µs/read; 5.39 M reads/minute).
 
 === Summary ===
 
@@ -557,7 +557,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S1B2230_1.fastq.gz -p results/02.cutadapt/S1B2230_2.fastq.gz data/S1B2230_R1.fastq.gz data/S1B2230_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 4.52 s (12 µs/read; 5.08 M reads/minute).
+Finished in 4.24 s (11 µs/read; 5.41 M reads/minute).
 
 === Summary ===
 
@@ -672,7 +672,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S1B3040_1.fastq.gz -p results/02.cutadapt/S1B3040_2.fastq.gz data/S1B3040_R1.fastq.gz data/S1B3040_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.24 s (11 µs/read; 5.32 M reads/minute).
+Finished in 3.18 s (11 µs/read; 5.42 M reads/minute).
 
 === Summary ===
 
@@ -771,7 +771,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S1B6575_1.fastq.gz -p results/02.cutadapt/S1B6575_2.fastq.gz data/S1B6575_R1.fastq.gz data/S1B6575_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.80 s (11 µs/read; 5.60 M reads/minute).
+Finished in 3.86 s (11 µs/read; 5.50 M reads/minute).
 
 === Summary ===
 
@@ -869,7 +869,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S2A1727_1.fastq.gz -p results/02.cutadapt/S2A1727_2.fastq.gz data/S2A1727_R1.fastq.gz data/S2A1727_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.60 s (11 µs/read; 5.63 M reads/minute).
+Finished in 3.67 s (11 µs/read; 5.52 M reads/minute).
 
 === Summary ===
 
@@ -952,7 +952,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S2A3545_1.fastq.gz -p results/02.cutadapt/S2A3545_2.fastq.gz data/S2A3545_R1.fastq.gz data/S2A3545_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.66 s (11 µs/read; 5.40 M reads/minute).
+Finished in 3.68 s (11 µs/read; 5.38 M reads/minute).
 
 === Summary ===
 
@@ -1085,7 +1085,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S2A5060_1.fastq.gz -p results/02.cutadapt/S2A5060_2.fastq.gz data/S2A5060_R1.fastq.gz data/S2A5060_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 4.52 s (11 µs/read; 5.26 M reads/minute).
+Finished in 4.41 s (11 µs/read; 5.39 M reads/minute).
 
 === Summary ===
 
@@ -1213,7 +1213,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S2A515_1.fastq.gz -p results/02.cutadapt/S2A515_2.fastq.gz data/S2A515_R1.fastq.gz data/S2A515_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 2.93 s (11 µs/read; 5.37 M reads/minute).
+Finished in 3.01 s (11 µs/read; 5.23 M reads/minute).
 
 === Summary ===
 
@@ -1317,7 +1317,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S2B07_1.fastq.gz -p results/02.cutadapt/S2B07_2.fastq.gz data/S2B07_R1.fastq.gz data/S2B07_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.26 s (11 µs/read; 5.33 M reads/minute).
+Finished in 3.18 s (11 µs/read; 5.47 M reads/minute).
 
 === Summary ===
 
@@ -1428,7 +1428,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S2B1522_1.fastq.gz -p results/02.cutadapt/S2B1522_2.fastq.gz data/S2B1522_R1.fastq.gz data/S2B1522_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.46 s (11 µs/read; 5.39 M reads/minute).
+Finished in 3.48 s (11 µs/read; 5.36 M reads/minute).
 
 === Summary ===
 
@@ -1525,7 +1525,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S2B3040_1.fastq.gz -p results/02.cutadapt/S2B3040_2.fastq.gz data/S2B3040_R1.fastq.gz data/S2B3040_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.93 s (12 µs/read; 5.19 M reads/minute).
+Finished in 3.73 s (11 µs/read; 5.48 M reads/minute).
 
 === Summary ===
 
@@ -1638,7 +1638,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S2B5565_1.fastq.gz -p results/02.cutadapt/S2B5565_2.fastq.gz data/S2B5565_R1.fastq.gz data/S2B5565_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 2.65 s (12 µs/read; 5.01 M reads/minute).
+Finished in 2.61 s (12 µs/read; 5.09 M reads/minute).
 
 === Summary ===
 
@@ -1726,7 +1726,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S3A07_1.fastq.gz -p results/02.cutadapt/S3A07_2.fastq.gz data/S3A07_R1.fastq.gz data/S3A07_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 2.77 s (12 µs/read; 5.06 M reads/minute).
+Finished in 2.69 s (12 µs/read; 5.21 M reads/minute).
 
 === Summary ===
 
@@ -1840,7 +1840,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S3A1522_1.fastq.gz -p results/02.cutadapt/S3A1522_2.fastq.gz data/S3A1522_R1.fastq.gz data/S3A1522_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.02 s (12 µs/read; 5.16 M reads/minute).
+Finished in 2.94 s (11 µs/read; 5.30 M reads/minute).
 
 === Summary ===
 
@@ -1925,7 +1925,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S3A3040_1.fastq.gz -p results/02.cutadapt/S3A3040_2.fastq.gz data/S3A3040_R1.fastq.gz data/S3A3040_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 2.78 s (12 µs/read; 4.95 M reads/minute).
+Finished in 2.68 s (12 µs/read; 5.13 M reads/minute).
 
 === Summary ===
 
@@ -2003,7 +2003,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S3A6070_1.fastq.gz -p results/02.cutadapt/S3A6070_2.fastq.gz data/S3A6070_R1.fastq.gz data/S3A6070_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 2.24 s (13 µs/read; 4.80 M reads/minute).
+Finished in 1.92 s (11 µs/read; 5.60 M reads/minute).
 
 === Summary ===
 
@@ -2075,7 +2075,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S3B2030_1.fastq.gz -p results/02.cutadapt/S3B2030_2.fastq.gz data/S3B2030_R1.fastq.gz data/S3B2030_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 4.15 s (12 µs/read; 5.19 M reads/minute).
+Finished in 3.85 s (11 µs/read; 5.60 M reads/minute).
 
 === Summary ===
 
@@ -2186,7 +2186,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S3B3545_1.fastq.gz -p results/02.cutadapt/S3B3545_2.fastq.gz data/S3B3545_R1.fastq.gz data/S3B3545_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.96 s (12 µs/read; 4.88 M reads/minute).
+Finished in 3.62 s (11 µs/read; 5.33 M reads/minute).
 
 === Summary ===
 
@@ -2273,13 +2273,133 @@ length	count	expect	max.err	error counts
 25	1	0.0	2	0 1
 35	1	0.0	2	1
 61	1	0.0	2	0 0 1
+Run cutadapt to S3B515 sample
+cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S3B515_1.fastq.gz -p results/02.cutadapt/S3B515_2.fastq.gz data/S3B515_R1.fastq.gz data/S3B515_R2.fastq.gz 
+
+This is cutadapt 3.5 with Python 3.10.12
+Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S3B515_1.fastq.gz -p results/02.cutadapt/S3B515_2.fastq.gz data/S3B515_R1.fastq.gz data/S3B515_R2.fastq.gz
+Processing reads on 80 cores in paired-end mode ...
+Finished in 2.68 s (12 µs/read; 5.20 M reads/minute).
+
+=== Summary ===
+
+Total read pairs processed:            232,134
+  Read 1 with adapter:                 213,714 (92.1%)
+  Read 2 with adapter:                 216,047 (93.1%)
+
+== Read fate breakdown ==
+Pairs that were too short:               1,227 (0.5%)
+Pairs written (passing filters):       230,907 (99.5%)
+
+Total basepairs processed:   139,091,618 bp
+  Read 1:    69,636,358 bp
+  Read 2:    69,455,260 bp
+Total written (filtered):    130,625,472 bp (93.9%)
+  Read 1:    65,852,978 bp
+  Read 2:    64,772,494 bp
+
+=== First read: Adapter 1 ===
+
+Sequence: CCTACGGGNGGCWGCAG; Type: regular 5'; Length: 17; Trimmed: 213714 times
+
+Minimum overlap: 3
+No. of allowed errors:
+1-9 bp: 0; 10-16 bp: 1
+
+Overview of removed sequences
+length	count	expect	max.err	error counts
+3	19	3627.1	0	19
+4	2	906.8	0	2
+11	1	0.1	1	1
+12	1	0.0	1	1
+13	10	0.0	1	5 5
+14	16	0.0	1	1 15
+15	74	0.0	1	33 41
+16	3488	0.0	1	2020 1468
+17	209894	0.0	1	199943 9951
+18	77	0.0	1	59 18
+46	2	0.0	1	2
+48	1	0.0	1	1
+52	2	0.0	1	1 1
+53	2	0.0	1	2
+54	3	0.0	1	3
+64	1	0.0	1	1
+73	1	0.0	1	0 1
+78	1	0.0	1	1
+79	4	0.0	1	2 2
+90	1	0.0	1	1
+134	2	0.0	1	2
+135	22	0.0	1	17 5
+138	2	0.0	1	2
+143	1	0.0	1	1
+145	1	0.0	1	1
+146	1	0.0	1	1
+147	16	0.0	1	14 2
+148	1	0.0	1	1
+168	1	0.0	1	1
+174	2	0.0	1	1 1
+182	1	0.0	1	0 1
+183	1	0.0	1	1
+184	2	0.0	1	2
+189	1	0.0	1	1
+217	1	0.0	1	1
+218	2	0.0	1	2
+227	2	0.0	1	0 2
+229	3	0.0	1	0 3
+240	1	0.0	1	1
+241	1	0.0	1	1
+254	1	0.0	1	0 1
+267	1	0.0	1	0 1
+270	1	0.0	1	0 1
+279	1	0.0	1	0 1
+280	1	0.0	1	0 1
+285	3	0.0	1	3
+286	16	0.0	1	12 4
+287	1	0.0	1	1
+290	1	0.0	1	0 1
+291	1	0.0	1	1
+292	1	0.0	1	1
+293	10	0.0	1	9 1
+294	1	0.0	1	1
+298	2	0.0	1	2
+299	1	0.0	1	1
+300	4	0.0	1	4
+301	4	0.0	1	4
+
+
+=== Second read: Adapter 2 ===
+
+Sequence: GACTACHVGGGTATCTAATCC; Type: regular 5'; Length: 21; Trimmed: 216047 times
+
+Minimum overlap: 3
+No. of allowed errors:
+1-9 bp: 0; 10-19 bp: 1; 20-21 bp: 2
+
+Overview of removed sequences
+length	count	expect	max.err	error counts
+3	12	3627.1	0	12
+4	1	906.8	0	1
+5	1	226.7	0	1
+11	2	0.1	1	2
+14	1	0.0	1	0 1
+15	1	0.0	1	1
+16	2	0.0	1	0 2
+17	4	0.0	1	0 4
+18	24	0.0	1	6 18
+19	95	0.0	1	62 33
+20	4751	0.0	2	3054 1002 695
+21	211102	0.0	2	206257 4034 811
+22	43	0.0	2	13 17 13
+47	1	0.0	2	1
+59	1	0.0	2	0 0 1
+61	6	0.0	2	0 2 4
 Run cutadapt to S3B6070 sample
 cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S3B6070_1.fastq.gz -p results/02.cutadapt/S3B6070_2.fastq.gz data/S3B6070_R1.fastq.gz data/S3B6070_R2.fastq.gz 
 
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S3B6070_1.fastq.gz -p results/02.cutadapt/S3B6070_2.fastq.gz data/S3B6070_R1.fastq.gz data/S3B6070_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 12.80 s (12 µs/read; 5.04 M reads/minute).
+Finished in 11.41 s (11 µs/read; 5.65 M reads/minute).
 
 === Summary ===
 
@@ -2397,7 +2517,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S4B07_1.fastq.gz -p results/02.cutadapt/S4B07_2.fastq.gz data/S4B07_R1.fastq.gz data/S4B07_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 4.56 s (12 µs/read; 5.04 M reads/minute).
+Finished in 4.29 s (11 µs/read; 5.35 M reads/minute).
 
 === Summary ===
 
@@ -2522,7 +2642,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S4B1522_1.fastq.gz -p results/02.cutadapt/S4B1522_2.fastq.gz data/S4B1522_R1.fastq.gz data/S4B1522_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 2.65 s (12 µs/read; 4.97 M reads/minute).
+Finished in 2.37 s (11 µs/read; 5.56 M reads/minute).
 
 === Summary ===
 
@@ -2621,7 +2741,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S4B3040_1.fastq.gz -p results/02.cutadapt/S4B3040_2.fastq.gz data/S4B3040_R1.fastq.gz data/S4B3040_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.56 s (11 µs/read; 5.50 M reads/minute).
+Finished in 3.48 s (11 µs/read; 5.63 M reads/minute).
 
 === Summary ===
 
@@ -2737,7 +2857,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S4B5565_1.fastq.gz -p results/02.cutadapt/S4B5565_2.fastq.gz data/S4B5565_R1.fastq.gz data/S4B5565_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.73 s (11 µs/read; 5.35 M reads/minute).
+Finished in 3.69 s (11 µs/read; 5.40 M reads/minute).
 
 === Summary ===
 
@@ -2847,7 +2967,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S5A07_1.fastq.gz -p results/02.cutadapt/S5A07_2.fastq.gz data/S5A07_R1.fastq.gz data/S5A07_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.66 s (11 µs/read; 5.53 M reads/minute).
+Finished in 3.74 s (11 µs/read; 5.42 M reads/minute).
 
 === Summary ===
 
@@ -2972,7 +3092,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S5A1522_1.fastq.gz -p results/02.cutadapt/S5A1522_2.fastq.gz data/S5A1522_R1.fastq.gz data/S5A1522_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 2.80 s (11 µs/read; 5.43 M reads/minute).
+Finished in 2.79 s (11 µs/read; 5.46 M reads/minute).
 
 === Summary ===
 
@@ -3088,7 +3208,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S5A3040_1.fastq.gz -p results/02.cutadapt/S5A3040_2.fastq.gz data/S5A3040_R1.fastq.gz data/S5A3040_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 4.07 s (12 µs/read; 5.12 M reads/minute).
+Finished in 3.81 s (11 µs/read; 5.48 M reads/minute).
 
 === Summary ===
 
@@ -3212,7 +3332,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S5A5565_1.fastq.gz -p results/02.cutadapt/S5A5565_2.fastq.gz data/S5A5565_R1.fastq.gz data/S5A5565_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 2.07 s (13 µs/read; 4.67 M reads/minute).
+Finished in 1.87 s (12 µs/read; 5.17 M reads/minute).
 
 === Summary ===
 
@@ -3284,7 +3404,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S5B07_1.fastq.gz -p results/02.cutadapt/S5B07_2.fastq.gz data/S5B07_R1.fastq.gz data/S5B07_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.59 s (12 µs/read; 5.11 M reads/minute).
+Finished in 3.33 s (11 µs/read; 5.51 M reads/minute).
 
 === Summary ===
 
@@ -3407,7 +3527,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S5B1522_1.fastq.gz -p results/02.cutadapt/S5B1522_2.fastq.gz data/S5B1522_R1.fastq.gz data/S5B1522_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.76 s (12 µs/read; 5.13 M reads/minute).
+Finished in 3.51 s (11 µs/read; 5.49 M reads/minute).
 
 === Summary ===
 
@@ -3516,7 +3636,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S5B3040_1.fastq.gz -p results/02.cutadapt/S5B3040_2.fastq.gz data/S5B3040_R1.fastq.gz data/S5B3040_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 5.96 s (11 µs/read; 5.25 M reads/minute).
+Finished in 5.52 s (11 µs/read; 5.67 M reads/minute).
 
 === Summary ===
 
@@ -3635,7 +3755,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S5B5060_1.fastq.gz -p results/02.cutadapt/S5B5060_2.fastq.gz data/S5B5060_R1.fastq.gz data/S5B5060_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 4.96 s (12 µs/read; 4.95 M reads/minute).
+Finished in 4.38 s (11 µs/read; 5.59 M reads/minute).
 
 === Summary ===
 
@@ -3722,7 +3842,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S6A07_1.fastq.gz -p results/02.cutadapt/S6A07_2.fastq.gz data/S6A07_R1.fastq.gz data/S6A07_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 4.13 s (12 µs/read; 4.93 M reads/minute).
+Finished in 3.71 s (11 µs/read; 5.49 M reads/minute).
 
 === Summary ===
 
@@ -3846,7 +3966,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S6A1522_1.fastq.gz -p results/02.cutadapt/S6A1522_2.fastq.gz data/S6A1522_R1.fastq.gz data/S6A1522_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.65 s (12 µs/read; 5.00 M reads/minute).
+Finished in 3.40 s (11 µs/read; 5.37 M reads/minute).
 
 === Summary ===
 
@@ -3945,7 +4065,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S6A3040_1.fastq.gz -p results/02.cutadapt/S6A3040_2.fastq.gz data/S6A3040_R1.fastq.gz data/S6A3040_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.38 s (12 µs/read; 5.02 M reads/minute).
+Finished in 3.15 s (11 µs/read; 5.39 M reads/minute).
 
 === Summary ===
 
@@ -4022,7 +4142,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S6B07_1.fastq.gz -p results/02.cutadapt/S6B07_2.fastq.gz data/S6B07_R1.fastq.gz data/S6B07_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 5.31 s (12 µs/read; 4.96 M reads/minute).
+Finished in 4.78 s (11 µs/read; 5.50 M reads/minute).
 
 === Summary ===
 
@@ -4151,7 +4271,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S6B1522_1.fastq.gz -p results/02.cutadapt/S6B1522_2.fastq.gz data/S6B1522_R1.fastq.gz data/S6B1522_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.68 s (12 µs/read; 4.96 M reads/minute).
+Finished in 3.36 s (11 µs/read; 5.45 M reads/minute).
 
 === Summary ===
 
@@ -4252,7 +4372,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S6B3040_1.fastq.gz -p results/02.cutadapt/S6B3040_2.fastq.gz data/S6B3040_R1.fastq.gz data/S6B3040_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.43 s (12 µs/read; 5.05 M reads/minute).
+Finished in 3.15 s (11 µs/read; 5.50 M reads/minute).
 
 === Summary ===
 
@@ -4348,13 +4468,108 @@ length	count	expect	max.err	error counts
 45	2	0.0	2	2
 54	1	0.0	2	1
 61	4	0.0	2	0 0 4
+Run cutadapt to S73040 sample
+cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S73040_1.fastq.gz -p results/02.cutadapt/S73040_2.fastq.gz data/S73040_R1.fastq.gz data/S73040_R2.fastq.gz 
+
+This is cutadapt 3.5 with Python 3.10.12
+Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S73040_1.fastq.gz -p results/02.cutadapt/S73040_2.fastq.gz data/S73040_R1.fastq.gz data/S73040_R2.fastq.gz
+Processing reads on 80 cores in paired-end mode ...
+Finished in 3.69 s (11 µs/read; 5.49 M reads/minute).
+
+=== Summary ===
+
+Total read pairs processed:            337,656
+  Read 1 with adapter:                 313,649 (92.9%)
+  Read 2 with adapter:                 311,925 (92.4%)
+
+== Read fate breakdown ==
+Pairs that were too short:                 745 (0.2%)
+Pairs written (passing filters):       336,911 (99.8%)
+
+Total basepairs processed:   202,618,702 bp
+  Read 1:   101,451,381 bp
+  Read 2:   101,167,321 bp
+Total written (filtered):    190,624,177 bp (94.1%)
+  Read 1:    96,057,402 bp
+  Read 2:    94,566,775 bp
+
+=== First read: Adapter 1 ===
+
+Sequence: CCTACGGGNGGCWGCAG; Type: regular 5'; Length: 17; Trimmed: 313649 times
+
+Minimum overlap: 3
+No. of allowed errors:
+1-9 bp: 0; 10-16 bp: 1
+
+Overview of removed sequences
+length	count	expect	max.err	error counts
+3	39	5275.9	0	39
+11	3	0.1	1	3
+12	2	0.0	1	1 1
+13	21	0.0	1	16 5
+14	41	0.0	1	16 25
+15	173	0.0	1	66 107
+16	6279	0.0	1	4120 2159
+17	306955	0.0	1	298132 8823
+18	98	0.0	1	83 15
+24	1	0.0	1	1
+51	1	0.0	1	1
+52	5	0.0	1	2 3
+53	6	0.0	1	5 1
+54	10	0.0	1	10
+92	1	0.0	1	1
+134	1	0.0	1	0 1
+135	4	0.0	1	4
+184	1	0.0	1	1
+280	2	0.0	1	2
+287	2	0.0	1	1 1
+293	1	0.0	1	1
+297	1	0.0	1	1
+298	1	0.0	1	1
+300	1	0.0	1	1
+
+
+=== Second read: Adapter 2 ===
+
+Sequence: GACTACHVGGGTATCTAATCC; Type: regular 5'; Length: 21; Trimmed: 311925 times
+
+Minimum overlap: 3
+No. of allowed errors:
+1-9 bp: 0; 10-19 bp: 1; 20-21 bp: 2
+
+Overview of removed sequences
+length	count	expect	max.err	error counts
+3	84	5275.9	0	84
+4	5	1319.0	0	5
+5	5	329.7	0	5
+6	15	82.4	0	15
+11	2	0.1	1	2
+12	2	0.0	1	1 1
+13	1	0.0	1	0 1
+14	1	0.0	1	0 1
+15	3	0.0	1	2 1
+16	12	0.0	1	9 3
+17	4	0.0	1	3 1
+18	42	0.0	1	8 34
+19	195	0.0	1	103 92
+20	7548	0.0	2	4817 1533 1198
+21	303911	0.0	2	297842 4992 1077
+22	82	0.0	2	29 27 26
+24	1	0.0	2	0 0 1
+41	2	0.0	2	2
+45	1	0.0	2	1
+46	1	0.0	2	1
+55	2	0.0	2	1 1
+58	2	0.0	2	2
+61	3	0.0	2	0 0 3
+69	1	0.0	2	1
 Run cutadapt to S7A07 sample
 cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S7A07_1.fastq.gz -p results/02.cutadapt/S7A07_2.fastq.gz data/S7A07_R1.fastq.gz data/S7A07_R2.fastq.gz 
 
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S7A07_1.fastq.gz -p results/02.cutadapt/S7A07_2.fastq.gz data/S7A07_R1.fastq.gz data/S7A07_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 4.60 s (12 µs/read; 5.00 M reads/minute).
+Finished in 4.25 s (11 µs/read; 5.42 M reads/minute).
 
 === Summary ===
 
@@ -4473,7 +4688,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S7A1522_1.fastq.gz -p results/02.cutadapt/S7A1522_2.fastq.gz data/S7A1522_R1.fastq.gz data/S7A1522_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.33 s (11 µs/read; 5.29 M reads/minute).
+Finished in 3.38 s (12 µs/read; 5.21 M reads/minute).
 
 === Summary ===
 
@@ -4575,7 +4790,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S7A3040_1.fastq.gz -p results/02.cutadapt/S7A3040_2.fastq.gz data/S7A3040_R1.fastq.gz data/S7A3040_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 4.56 s (12 µs/read; 5.20 M reads/minute).
+Finished in 4.37 s (11 µs/read; 5.43 M reads/minute).
 
 === Summary ===
 
@@ -4684,7 +4899,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S7A5060_1.fastq.gz -p results/02.cutadapt/S7A5060_2.fastq.gz data/S7A5060_R1.fastq.gz data/S7A5060_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 1.69 s (12 µs/read; 5.05 M reads/minute).
+Finished in 1.61 s (11 µs/read; 5.29 M reads/minute).
 
 === Summary ===
 
@@ -4765,7 +4980,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S7B07_1.fastq.gz -p results/02.cutadapt/S7B07_2.fastq.gz data/S7B07_R1.fastq.gz data/S7B07_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.35 s (12 µs/read; 4.81 M reads/minute).
+Finished in 3.13 s (12 µs/read; 5.15 M reads/minute).
 
 === Summary ===
 
@@ -4868,7 +5083,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S7B1522_1.fastq.gz -p results/02.cutadapt/S7B1522_2.fastq.gz data/S7B1522_R1.fastq.gz data/S7B1522_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 4.16 s (12 µs/read; 4.92 M reads/minute).
+Finished in 3.75 s (11 µs/read; 5.47 M reads/minute).
 
 === Summary ===
 
@@ -4984,7 +5199,7 @@ cutadapt -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGG
 This is cutadapt 3.5 with Python 3.10.12
 Command line parameters: -m 200 --pair-filter any --no-indels -g CCTACGGGNGGCWGCAG -G GACTACHVGGGTATCTAATCC -Z -j 80 -o results/02.cutadapt/S7B5060_1.fastq.gz -p results/02.cutadapt/S7B5060_2.fastq.gz data/S7B5060_R1.fastq.gz data/S7B5060_R2.fastq.gz
 Processing reads on 80 cores in paired-end mode ...
-Finished in 3.24 s (12 µs/read; 4.91 M reads/minute).
+Finished in 3.00 s (11 µs/read; 5.31 M reads/minute).
 
 === Summary ===
 
@@ -5078,4 +5293,4 @@ length	count	expect	max.err	error counts
 61	4	0.0	2	0 1 3
 62	2	0.0	2	0 0 2
 69	1	0.0	2	1
-Wed Apr 10 13:43:52 MST 2024
+Tue Apr 16 12:54:20 MST 2024
