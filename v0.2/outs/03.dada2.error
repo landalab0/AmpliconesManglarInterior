@@ -1,0 +1,265 @@
+nohup: ignoring input
+Warning message:
+The `<scale>` argument of `guides()` cannot be `FALSE`. Use "none" instead as
+of ggplot2 3.3.4.
+ℹ The deprecated feature was likely used in the dada2 package.
+  Please report the issue at <https://github.com/benjjneb/dada2/issues>. 
+Warning message:
+In dir.create(filt_path) :
+  cannot create dir 'results/03.Dada2/01.filter_reads', reason 'No such file or directory'
+Creating output directory: results/03.Dada2/01.filter_reads
+Saving 6 x 7 in image
+Saving 6 x 7 in image
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S1A015_F_filt.fastq.gz
+Encountered 122338 unique sequences from 304350 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S1A1530_F_filt.fastq.gz
+Encountered 119372 unique sequences from 317482 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S1A3050_F_filt.fastq.gz
+Encountered 95874 unique sequences from 224633 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S1A5075_F_filt.fastq.gz
+Encountered 97860 unique sequences from 232697 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S1B07_F_filt.fastq.gz
+Encountered 109025 unique sequences from 286743 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S1B2230_F_filt.fastq.gz
+Encountered 135212 unique sequences from 343553 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S1B3040_F_filt.fastq.gz
+Encountered 101204 unique sequences from 253735 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S1B6575_F_filt.fastq.gz
+Encountered 132721 unique sequences from 320005 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S2A1727_F_filt.fastq.gz
+Encountered 129351 unique sequences from 299212 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S2A3545_F_filt.fastq.gz
+Encountered 124712 unique sequences from 294199 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S2A5060_F_filt.fastq.gz
+Encountered 140840 unique sequences from 355911 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S2A515_F_filt.fastq.gz
+Encountered 104609 unique sequences from 236649 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S2B07_F_filt.fastq.gz
+Encountered 118664 unique sequences from 257889 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S2B1522_F_filt.fastq.gz
+Encountered 110364 unique sequences from 279690 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S2B3040_F_filt.fastq.gz
+Encountered 111356 unique sequences from 305751 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S2B5565_F_filt.fastq.gz
+Encountered 77076 unique sequences from 198285 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S3A07_F_filt.fastq.gz
+Encountered 84577 unique sequences from 207147 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S3A1522_F_filt.fastq.gz
+Encountered 83032 unique sequences from 232620 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S3A3040_F_filt.fastq.gz
+Encountered 86116 unique sequences from 203028 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S3A6070_F_filt.fastq.gz
+Encountered 54889 unique sequences from 160260 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S3B2030_F_filt.fastq.gz
+Encountered 124487 unique sequences from 322096 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S3B3545_F_filt.fastq.gz
+Encountered 121373 unique sequences from 287923 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S3B515_F_filt.fastq.gz
+Encountered 90749 unique sequences from 208372 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S3B6070_F_filt.fastq.gz
+Encountered 289686 unique sequences from 971009 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S4B07_F_filt.fastq.gz
+Encountered 141589 unique sequences from 345187 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S4B1522_F_filt.fastq.gz
+Encountered 83736 unique sequences from 198625 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S4B3040_F_filt.fastq.gz
+Encountered 120075 unique sequences from 293421 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S4B5565_F_filt.fastq.gz
+Encountered 120271 unique sequences from 300810 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S5A07_F_filt.fastq.gz
+Encountered 112357 unique sequences from 300905 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S5A1522_F_filt.fastq.gz
+Encountered 86973 unique sequences from 227163 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S5A3040_F_filt.fastq.gz
+Encountered 119011 unique sequences from 307848 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S5A5565_F_filt.fastq.gz
+Encountered 63799 unique sequences from 144886 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S5B07_F_filt.fastq.gz
+Encountered 109649 unique sequences from 275145 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S5B1522_F_filt.fastq.gz
+Encountered 141370 unique sequences from 291202 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S5B3040_F_filt.fastq.gz
+Encountered 190972 unique sequences from 470139 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S5B5060_F_filt.fastq.gz
+Encountered 150230 unique sequences from 368802 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S6A07_F_filt.fastq.gz
+Encountered 112357 unique sequences from 303854 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S6A1522_F_filt.fastq.gz
+Encountered 104233 unique sequences from 274684 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S6A3040_F_filt.fastq.gz
+Encountered 92205 unique sequences from 252152 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S6B07_F_filt.fastq.gz
+Encountered 149902 unique sequences from 394003 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S6B1522_F_filt.fastq.gz
+Encountered 108265 unique sequences from 274893 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S6B3040_F_filt.fastq.gz
+Encountered 110958 unique sequences from 256281 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S7A07_F_filt.fastq.gz
+Encountered 138494 unique sequences from 340610 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S7A1522_F_filt.fastq.gz
+Encountered 103155 unique sequences from 261810 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S7A3040_F_filt.fastq.gz
+Encountered 138839 unique sequences from 350223 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S7A5060_F_filt.fastq.gz
+Encountered 65869 unique sequences from 128459 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S7B07_F_filt.fastq.gz
+Encountered 117896 unique sequences from 234484 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S7B1522_F_filt.fastq.gz
+Encountered 128142 unique sequences from 308083 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S7B3040_F_filt.fastq.gz
+Encountered 112549 unique sequences from 302081 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S7B5060_F_filt.fastq.gz
+Encountered 93781 unique sequences from 238942 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S1A015_R_filt.fastq.gz
+Encountered 145273 unique sequences from 304350 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S1A1530_R_filt.fastq.gz
+Encountered 151278 unique sequences from 317482 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S1A3050_R_filt.fastq.gz
+Encountered 106852 unique sequences from 224633 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S1A5075_R_filt.fastq.gz
+Encountered 113182 unique sequences from 232697 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S1B07_R_filt.fastq.gz
+Encountered 135808 unique sequences from 286743 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S1B2230_R_filt.fastq.gz
+Encountered 163275 unique sequences from 343553 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S1B3040_R_filt.fastq.gz
+Encountered 114042 unique sequences from 253735 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S1B6575_R_filt.fastq.gz
+Encountered 149602 unique sequences from 320005 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S2A1727_R_filt.fastq.gz
+Encountered 147409 unique sequences from 299212 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S2A3545_R_filt.fastq.gz
+Encountered 138584 unique sequences from 294199 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S2A5060_R_filt.fastq.gz
+Encountered 171527 unique sequences from 355911 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S2A515_R_filt.fastq.gz
+Encountered 116437 unique sequences from 236649 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S2B07_R_filt.fastq.gz
+Encountered 123172 unique sequences from 257889 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S2B1522_R_filt.fastq.gz
+Encountered 131850 unique sequences from 279690 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S2B3040_R_filt.fastq.gz
+Encountered 128186 unique sequences from 305751 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S2B5565_R_filt.fastq.gz
+Encountered 98043 unique sequences from 198285 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S3A07_R_filt.fastq.gz
+Encountered 106350 unique sequences from 207147 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S3A1522_R_filt.fastq.gz
+Encountered 108080 unique sequences from 232620 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S3A3040_R_filt.fastq.gz
+Encountered 97059 unique sequences from 203028 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S3A6070_R_filt.fastq.gz
+Encountered 68941 unique sequences from 160260 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S3B2030_R_filt.fastq.gz
+Encountered 150748 unique sequences from 322096 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S3B3545_R_filt.fastq.gz
+Encountered 135969 unique sequences from 287923 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S3B515_R_filt.fastq.gz
+Encountered 105325 unique sequences from 208372 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S3B6070_R_filt.fastq.gz
+Encountered 357820 unique sequences from 971009 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S4B07_R_filt.fastq.gz
+Encountered 163388 unique sequences from 345187 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S4B1522_R_filt.fastq.gz
+Encountered 95893 unique sequences from 198625 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S4B3040_R_filt.fastq.gz
+Encountered 134120 unique sequences from 293421 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S4B5565_R_filt.fastq.gz
+Encountered 149194 unique sequences from 300810 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S5A07_R_filt.fastq.gz
+Encountered 135118 unique sequences from 300905 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S5A1522_R_filt.fastq.gz
+Encountered 101921 unique sequences from 227163 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S5A3040_R_filt.fastq.gz
+Encountered 136944 unique sequences from 307848 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S5A5565_R_filt.fastq.gz
+Encountered 70358 unique sequences from 144886 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S5B07_R_filt.fastq.gz
+Encountered 133497 unique sequences from 275145 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S5B1522_R_filt.fastq.gz
+Encountered 148953 unique sequences from 291202 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S5B3040_R_filt.fastq.gz
+Encountered 214450 unique sequences from 470139 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S5B5060_R_filt.fastq.gz
+Encountered 158149 unique sequences from 368802 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S6A07_R_filt.fastq.gz
+Encountered 150580 unique sequences from 303854 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S6A1522_R_filt.fastq.gz
+Encountered 130808 unique sequences from 274684 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S6A3040_R_filt.fastq.gz
+Encountered 114080 unique sequences from 252152 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S6B07_R_filt.fastq.gz
+Encountered 175760 unique sequences from 394003 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S6B1522_R_filt.fastq.gz
+Encountered 114323 unique sequences from 274893 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S6B3040_R_filt.fastq.gz
+Encountered 109772 unique sequences from 256281 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S7A07_R_filt.fastq.gz
+Encountered 168028 unique sequences from 340610 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S7A1522_R_filt.fastq.gz
+Encountered 120849 unique sequences from 261810 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S7A3040_R_filt.fastq.gz
+Encountered 159352 unique sequences from 350223 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S7A5060_R_filt.fastq.gz
+Encountered 68204 unique sequences from 128459 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S7B07_R_filt.fastq.gz
+Encountered 150393 unique sequences from 234484 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S7B1522_R_filt.fastq.gz
+Encountered 148983 unique sequences from 308083 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S7B3040_R_filt.fastq.gz
+Encountered 123943 unique sequences from 302081 total sequences read.
+Dereplicating sequence entries in Fastq file: results/03.Dada2/01.filter_reads/S7B5060_R_filt.fastq.gz
+Encountered 109368 unique sequences from 238942 total sequences read.
+Self-consistency loop terminated before convergence.
+Self-consistency loop terminated before convergence.
+267186 paired-reads (in 12121 unique pairings) successfully merged out of 288187 (in 21373 pairings) input.
+283150 paired-reads (in 12961 unique pairings) successfully merged out of 303394 (in 22304 pairings) input.
+195353 paired-reads (in 12196 unique pairings) successfully merged out of 211549 (in 20630 pairings) input.
+204964 paired-reads (in 12434 unique pairings) successfully merged out of 220831 (in 20097 pairings) input.
+250644 paired-reads (in 15155 unique pairings) successfully merged out of 270379 (in 24842 pairings) input.
+296258 paired-reads (in 15956 unique pairings) successfully merged out of 324662 (in 29296 pairings) input.
+220753 paired-reads (in 10760 unique pairings) successfully merged out of 241202 (in 20182 pairings) input.
+269656 paired-reads (in 14355 unique pairings) successfully merged out of 301102 (in 28977 pairings) input.
+242557 paired-reads (in 14485 unique pairings) successfully merged out of 273032 (in 31881 pairings) input.
+249835 paired-reads (in 17459 unique pairings) successfully merged out of 273102 (in 29536 pairings) input.
+305076 paired-reads (in 17371 unique pairings) successfully merged out of 334656 (in 31386 pairings) input.
+200551 paired-reads (in 13336 unique pairings) successfully merged out of 221152 (in 24181 pairings) input.
+214680 paired-reads (in 12762 unique pairings) successfully merged out of 236902 (in 24580 pairings) input.
+241425 paired-reads (in 13627 unique pairings) successfully merged out of 263143 (in 24511 pairings) input.
+271739 paired-reads (in 13726 unique pairings) successfully merged out of 291901 (in 23979 pairings) input.
+173513 paired-reads (in 10474 unique pairings) successfully merged out of 188535 (in 18074 pairings) input.
+176805 paired-reads (in 11098 unique pairings) successfully merged out of 193209 (in 18980 pairings) input.
+206865 paired-reads (in 9255 unique pairings) successfully merged out of 222574 (in 16217 pairings) input.
+172958 paired-reads (in 10357 unique pairings) successfully merged out of 190568 (in 18630 pairings) input.
+144768 paired-reads (in 5551 unique pairings) successfully merged out of 154616 (in 9388 pairings) input.
+279503 paired-reads (in 13987 unique pairings) successfully merged out of 305411 (in 26230 pairings) input.
+246817 paired-reads (in 13667 unique pairings) successfully merged out of 270447 (in 25545 pairings) input.
+175751 paired-reads (in 12280 unique pairings) successfully merged out of 193937 (in 22136 pairings) input.
+883494 paired-reads (in 22376 unique pairings) successfully merged out of 941779 (in 44019 pairings) input.
+297141 paired-reads (in 15593 unique pairings) successfully merged out of 322749 (in 29063 pairings) input.
+170744 paired-reads (in 11880 unique pairings) successfully merged out of 185769 (in 19941 pairings) input.
+256199 paired-reads (in 15765 unique pairings) successfully merged out of 277433 (in 26394 pairings) input.
+259395 paired-reads (in 16794 unique pairings) successfully merged out of 283850 (in 28648 pairings) input.
+265292 paired-reads (in 12956 unique pairings) successfully merged out of 285078 (in 21812 pairings) input.
+201897 paired-reads (in 11397 unique pairings) successfully merged out of 215581 (in 18163 pairings) input.
+274387 paired-reads (in 14977 unique pairings) successfully merged out of 293577 (in 24585 pairings) input.
+127264 paired-reads (in 8128 unique pairings) successfully merged out of 137207 (in 13153 pairings) input.
+240011 paired-reads (in 14042 unique pairings) successfully merged out of 258741 (in 23801 pairings) input.
+220508 paired-reads (in 18039 unique pairings) successfully merged out of 258842 (in 43908 pairings) input.
+402860 paired-reads (in 22524 unique pairings) successfully merged out of 441246 (in 42659 pairings) input.
+314968 paired-reads (in 15674 unique pairings) successfully merged out of 346641 (in 32694 pairings) input.
+268201 paired-reads (in 12330 unique pairings) successfully merged out of 288284 (in 20984 pairings) input.
+243312 paired-reads (in 11931 unique pairings) successfully merged out of 260275 (in 19879 pairings) input.
+225319 paired-reads (in 11677 unique pairings) successfully merged out of 240176 (in 18552 pairings) input.
+341663 paired-reads (in 14839 unique pairings) successfully merged out of 370411 (in 26991 pairings) input.
+243189 paired-reads (in 12057 unique pairings) successfully merged out of 259600 (in 20306 pairings) input.
+222974 paired-reads (in 13374 unique pairings) successfully merged out of 239905 (in 22127 pairings) input.
+290989 paired-reads (in 14963 unique pairings) successfully merged out of 317666 (in 27133 pairings) input.
+232171 paired-reads (in 11726 unique pairings) successfully merged out of 248243 (in 19338 pairings) input.
+307221 paired-reads (in 14507 unique pairings) successfully merged out of 331567 (in 25656 pairings) input.
+98137 paired-reads (in 9063 unique pairings) successfully merged out of 114130 (in 18728 pairings) input.
+193429 paired-reads (in 10384 unique pairings) successfully merged out of 214361 (in 20150 pairings) input.
+263361 paired-reads (in 15634 unique pairings) successfully merged out of 286473 (in 27484 pairings) input.
+273421 paired-reads (in 13927 unique pairings) successfully merged out of 289660 (in 21554 pairings) input.
+210299 paired-reads (in 13507 unique pairings) successfully merged out of 227077 (in 21405 pairings) input.
+Identified 72820 bimeras out of 170331 input sequences.
