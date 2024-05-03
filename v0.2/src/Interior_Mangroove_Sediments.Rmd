@@ -1,0 +1,1420 @@
+---
+title: "Interior_Mangroove_Sediments"
+author: "Diana Oaxaca"
+subtitle: "16S Amplicon Microbiota Diversity"
+date: "2024-04"
+output:
+  html_document:                   
+    collapsed: true               
+    code_folding: show             
+    toc: true                     
+    toc_depth: 5                   
+    toc_float: true                 
+    smooth_scroll: true            
+    highlight: tango               
+    df_print: paged                
+    number_Depths: true          
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Data Prepare
+
+```{r eval=FALSE, include=FALSE}
+load("src/Diversity.RData")
+```
+
+**Load data**
+
+```{r include=FALSE}
+library(qiime2R)
+# load data
+otu_table <- read_qza("../results/04.qiime/ASV_table_filter_freq218_emc.qza")$data
+metadata <- read.delim("../data/metadata.tsv", check.names = F)
+taxonomy <- read.delim("../results/04.qiime/exports/taxonomy_withoutconf.tsv", check.names = F)
+```
+
+**Check samples distribution**
+
+```{r}
+dim(metadata)
+```
+
+
+```{r}
+library(ggplot2)
+library(ggsci)
+
+# plot
+samples_plot <- ggplot(metadata, aes(x = ID, y = ..count.., fill = Depth_cm)) +
+  geom_bar(position = "dodge") +
+  facet_wrap(~ Site, scales = "free_x") + 
+  labs(title = "Samples by Site and Depth", y = "Number of Samples", x = "Site") +
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + # Rotate labels 
+  scale_fill_lancet()
+
+
+#show
+samples_plot
+```
+
+
+**Create Phyloseq** 
+
+```{r}
+library(phyloseq)
+library(qiime2R)
+
+#create phyloseq object
+
+ps <- qza_to_phyloseq(
+  features = "../results/04.qiime/ASV_table_filter_freq218_emc.qza",
+  #tree = "../results/04.qiime/rooted-tree-iqtree.qza",
+  taxonomy = "../results/04.qiime/taxonomy.qza",
+  metadata = "../data/metadata.tsv")
+```
+
+```{r}
+ps
+```
+
+## Clean taxonomy table
+
+
+```{r}
+library(devtools)
+library(microbiome)
+library(microbiomeutilities)
+
+#check data
+microbiome::summarize_phyloseq(ps)
+```
+
+
+**Search Phylum with low prevalence**
+
+```{r}
+# Explore prevalence
+## Get prevalence
+prevdf = apply(X = otu_table(ps),
+               MARGIN = ifelse(taxa_are_rows(ps), yes = 1, no = 2),
+               FUN = function(x){sum(x > 0)})
+## Add taxonomy
+prevdf = data.frame(Prevalence = prevdf,
+                    TotalAbundance = taxa_sums(ps),
+                    tax_table(ps))
+## Check prevalence at Phylum level
+plyr::ddply(prevdf, "Phylum", function(df1){cbind(mean(df1$Prevalence),sum(df1$Prevalence))})
+plyr::ddply(prevdf, "Genus", function(df1){cbind(mean(df1$Prevalence),sum(df1$Prevalence))})
+```
+```{r}
+## Get genus prevalence plot
+prevalence_genus = subset(prevdf, Genus %in% get_taxa_unique(ps, "Genus"))
+prev_genus <- ggplot(prevalence_genus, aes(TotalAbundance, 
+  Prevalence /nsamples(ps),color=Genus)) +
+  geom_hline(yintercept = 0.05, alpha = 0.5, linetype = 2) + 
+  geom_point(size = 1.5, alpha = 0.7) + theme_bw() +
+  scale_x_log10() +  xlab("Total Abundance") + ylab("Prevalence") +
+  facet_wrap(~Phylum) + theme(legend.position="none")
+
+prev_genus
+```
+
+**Clean  names**
+
+```{r}
+#check names
+
+head(phyloseq::tax_table(ps))
+tail(phyloseq::tax_table(ps))
+```
+
+**Agglomerate levels**
+
+```{r}
+#Aggregate at genus level.
+
+ps_family <- phyloseq::tax_glom(ps, "Family", NArm = TRUE)
+ps_genus <- phyloseq::tax_glom(ps, "Genus", NArm = TRUE)
+ps_species <- phyloseq::tax_glom(ps, "Species", NArm = TRUE)
+```
+
+```{r}
+ps_genus <- filter_taxa(ps_genus, function(x) sum(x) > 1, TRUE)
+
+head(phyloseq::tax_table(ps_genus))
+```
+
+
+**Change id by tax name**
+
+```{r}
+#Substitute these IDs with names of genus
+ps_genus <- format_to_besthit(ps_genus) #no me gusta el formato, pero sirve
+```
+
+```{r}
+head(phyloseq::tax_table(ps_genus))
+```
+
+**Clean rare characters**
+
+```{r}
+# Remove characters
+taxa_names(ps_genus) <- gsub(" ", ".", taxa_names(ps_genus))
+taxa_names(ps_genus) <- gsub("\\(|\\)", "", taxa_names(ps_genus))
+
+#check
+unique(tax_table(ps_genus)[,"Genus"] )
+```
+
+## Subset Sites phyloseq objects
+
+```{r}
+# check data
+table(meta(ps)$Site, meta(ps)$Depth_cm)
+```
+
+```{r}
+#subsets
+ps_s1 <- subset_samples(ps, Site == "Site_1")
+ps_s2 <- subset_samples(ps, Site == "Site_2")
+ps_s3 <- subset_samples(ps, Site == "Site_3")
+ps_s4 <- subset_samples(ps, Site == "Site_4")
+ps_s5 <- subset_samples(ps, Site == "Site_5")
+ps_s6 <- subset_samples(ps, Site == "Site_6")
+ps_s7 <- subset_samples(ps, Site == "Site_7")
+#show
+ps_s1
+ps_s2
+ps_s3
+ps_s4
+ps_s5
+ps_s6
+ps_s7
+```
+
+```{r}
+#check data
+microbiome::summarize_phyloseq(ps_s1)
+microbiome::summarize_phyloseq(ps_s2)
+microbiome::summarize_phyloseq(ps_s3)
+microbiome::summarize_phyloseq(ps_s4)
+microbiome::summarize_phyloseq(ps_s5)
+microbiome::summarize_phyloseq(ps_s6)
+microbiome::summarize_phyloseq(ps_s7)
+```
+
+
+**Remove singletons**
+
+
+```{r}
+#Delete singletons
+ps_s1 <- filter_taxa(ps_s1, function(x) sum(x) > 1, TRUE)
+ps_s2 <- filter_taxa(ps_s2, function(x) sum(x) > 1, TRUE)
+ps_s3 <- filter_taxa(ps_s3, function(x) sum(x) > 1, TRUE)
+ps_s4 <- filter_taxa(ps_s4, function(x) sum(x) > 1, TRUE)
+ps_s5 <- filter_taxa(ps_s5, function(x) sum(x) > 1, TRUE)
+ps_s6 <- filter_taxa(ps_s6, function(x) sum(x) > 1, TRUE)
+ps_s7 <- filter_taxa(ps_s7, function(x) sum(x) > 1, TRUE)
+#check
+ps_s1
+ps_s2
+ps_s3
+ps_s4
+ps_s5
+ps_s6
+ps_s7
+```
+
+
+## Relative abundance phyloseq objects
+
+```{r}
+library(microbiome)
+library(microbiomeutilities)
+
+#function
+convert_to_compositional_and_index_reformat <- function(ps) {
+  ps_rel <- microbiome::transform(ps, "compositional")
+  ps_rel_f <- format_to_besthit(ps_rel)
+  return(ps_rel_f)
+}
+
+# phyloseq objects
+phyloseq_objects <- list(ps_s1 = ps_s1, ps_s2 = ps_s2, ps_s3 = ps_s3, 
+                         ps_s4 = ps_s4, ps_s5 = ps_s5, ps_s6 = ps_s6,
+                         ps_s7 = ps_s7, ps=ps)
+
+# Apply
+phyloseq_objects_rel <- lapply(phyloseq_objects, convert_to_compositional_and_index_reformat)
+
+# Subset
+ps_s1_rel_f <- phyloseq_objects_rel$ps_s1
+ps_s2_rel_f <- phyloseq_objects_rel$ps_s2
+ps_s3_rel_f <- phyloseq_objects_rel$ps_s3
+ps_s4_rel_f <- phyloseq_objects_rel$ps_s4
+ps_s5_rel_f <- phyloseq_objects_rel$ps_s5
+ps_s6_rel_f <- phyloseq_objects_rel$ps_s6
+ps_s7_rel_f <- phyloseq_objects_rel$ps_s7
+ps_full_rel_f <- phyloseq_objects_rel$ps
+```
+
+
+
+## Full core object
+
+
+```{r}
+# Get full core with microbiome
+full_ps_core_relative <- core(ps_full_rel_f, 0, 0.5)
+full_ps_core_counts <- core(ps, 0, 0.5)
+
+# Check point
+ps
+ps_full_rel_f
+full_ps_core_relative
+full_ps_core_counts
+```
+
+```{r}
+microbiome::summarize_phyloseq(full_ps_core_counts)
+```
+
+
+## Create Ampvis Objects
+
+Create full, core and Site ampvis objects
+
+
+```{r}
+library(tibble)
+library(ampvis2)
+# Ampvis object function
+create_ampvis_object <- function(pseq) {
+  # create and extract otu table
+  otu_table_ampvis <- data.frame(OTU = rownames(phyloseq::otu_table(pseq)@.Data),
+                                 phyloseq::otu_table(pseq)@.Data,
+                                 phyloseq::tax_table(pseq)@.Data,
+                                 check.names = FALSE)
+
+  # Metadata
+  meta_data_ampvis <- data.frame(phyloseq::sample_data(pseq),
+                                 check.names = FALSE)
+
+  # change index by SampleID
+  meta_data_ampvis <- meta_data_ampvis %>% rownames_to_column(var = "SampleID")
+
+  # ampvis object
+  av2 <- amp_load(otu_table_ampvis, meta_data_ampvis)
+  
+  return(av2)
+}
+```
+
+
+```{r}
+
+# phyloseq objects
+phyloseq_objects <-list(ps_s1 = ps_s1, ps_s2 = ps_s2, ps_s3 = ps_s3, 
+                         ps_s4 = ps_s4, ps_s5 = ps_s5, ps_s6 = ps_s6,
+                         ps_s7 = ps_s7, ps=ps, full_ps_core_counts = full_ps_core_counts)
+
+# Apply function
+ampvis_objects <- lapply(phyloseq_objects, create_ampvis_object)
+
+ampvis_objects
+
+```
+
+```{r}
+#subset amp obj
+
+list(ps_s1 = ps_s1, ps_s2 = ps_s2, ps_s3 = ps_s3, 
+                         ps_s4 = ps_s4, ps_s5 = ps_s5, ps_s6 = ps_s6,
+                         ps_s7 = ps_s7, ps=ps)
+
+av2_full <- ampvis_objects$ps
+av2_full_core <- ampvis_objects$full_ps_core_counts
+av2_s1 <- ampvis_objects$ps_s1
+av2_s2 <-ampvis_objects$ps_s2
+av2_s3 <- ampvis_objects$ps_s3
+av2_s4 <- ampvis_objects$ps_s4
+av2_s5 <- ampvis_objects$ps_s5
+av2_s6 <- ampvis_objects$ps_s6
+av2_s7 <- ampvis_objects$ps_s7
+```
+
+
+# Abundances
+
+## Relative abundances
+
+**All**
+
+```{r}
+av2_full$metadata$Depth <- factor(av2_full$metadata$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+ampv_heatmap_abundances_king_full <- amp_heatmap(av2_full,
+            group_by = "Depth",
+            facet_by = "Site",
+            plot_values = TRUE,
+            tax_show = 25,
+            tax_aggregate = "Kingdom",
+            plot_colorscale = "log10",
+            plot_legendbreaks = c(1, 5, 5),
+            color_vector = c("white","deepskyblue3","magenta3"))
+
+ampv_heatmap_abundances_king_full
+```
+
+```{r}
+#Factor Depth_cm 
+av2_full$metadata$Depth <- factor(av2_full$metadata$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+
+# Full all samples
+ampv_heatmap_abundances_phylum_full <- amp_heatmap(av2_full,
+            group_by = "Depth",
+            facet_by = "Site",
+            plot_values = TRUE,
+            tax_show = 25,
+            tax_aggregate = "Phylum",
+            tax_add = "Kingdom",
+            plot_colorscale = "log10",
+            plot_legendbreaks = c(1, 5, 5),
+            color_vector = c("white","deepskyblue3","magenta3"))
+
+ampv_heatmap_abundances_phylum_full
+```
+
+**Core**
+
+```{r}
+#Factor Depth_cm 
+av2_full_core$metadata$Depth <- factor(av2_full_core$metadata$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+
+# Full all samples
+ampv_heatmap_abundances_phylum_core <- amp_heatmap(av2_full_core,
+            group_by = "Depth",
+            facet_by = "Site",
+            plot_values = TRUE,
+            tax_show = 25,
+            tax_aggregate = "Phylum",
+            tax_add = "Kingdom",
+            plot_colorscale = "log10",
+            plot_legendbreaks = c(1, 5, 5),
+            color_vector = c("white","deepskyblue3","magenta3"))
+
+ampv_heatmap_abundances_phylum_core
+```
+
+**Combine plots**
+
+```{r}
+library(cowplot)
+#Combine venn plot
+title_abund_plot <- ggdraw() + draw_label("Relative Abundance", fontface = 'bold', x = 0.5, hjust = 0.5, size = 15)
+ampv_all_g_plots <- plot_grid(title_abund_plot, ampv_heatmap_abundances_phylum_full, ampv_heatmap_abundances_phylum_core, labels = c("", "A", "B"), ncol = 1, rel_heights = c(0.15, 1, 1))
+
+ampv_all_g_plots
+```
+
+
+## Rank abundance
+
+**All**
+
+```{r}
+library(ampvis2)
+library(ggplot2)
+
+#Factor Depth_cm 
+av2_full$metadata$Depth <- factor(av2_full$metadata$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+
+# rank abundance
+rank_ab_full <- amp_rankabundance(av2_full, log10_x = TRUE, group_by = "Depth") +
+  scale_color_lancet() 
+
+rank_ab_full
+#ggsave("results/plots/02.diversity/02.rank_abundance.png", rank_ab , width = 5, height = 4)
+```
+
+**Site**
+
+```{r}
+# Site1
+#Factor Depth_cm 
+av2_s1$metadata$Depth <- factor(av2_s1$metadata$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+# rank abundance
+rank_ab_s1 <- amp_rankabundance(av2_s1, log10_x = TRUE, group_by = "Depth") +
+  scale_color_lancet() 
+
+# Site2
+#Factor Depth_cm 
+av2_s2$metadata$Depth <- factor(av2_s2$metadata$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+# rank abundance
+rank_ab_s2 <- amp_rankabundance(av2_s2, log10_x = TRUE, group_by = "Depth") +
+  scale_color_lancet() 
+
+# Site3
+#Factor Depth_cm 
+av2_s3$metadata$Depth <- factor(av2_s3$metadata$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+# rank abundance
+rank_ab_s3 <- amp_rankabundance(av2_s3, log10_x = TRUE, group_by = "Depth") +
+  scale_color_lancet() 
+
+# Site4
+#Factor Depth_cm 
+av2_s4$metadata$Depth <- factor(av2_s4$metadata$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+# rank abundance
+rank_ab_s4 <- amp_rankabundance(av2_s4, log10_x = TRUE, group_by = "Depth") +
+  scale_color_lancet()
+
+# Site5
+#Factor Depth_cm 
+av2_s5$metadata$Depth <- factor(av2_s5$metadata$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+# rank abundance
+rank_ab_s5 <- amp_rankabundance(av2_s5, log10_x = TRUE, group_by = "Depth") +
+  scale_color_lancet()
+
+# Site6
+#Factor Depth_cm 
+av2_s6$metadata$Depth <- factor(av2_s6$metadata$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+# rank abundance
+rank_ab_s6 <- amp_rankabundance(av2_s6, log10_x = TRUE, group_by = "Depth") +
+  scale_color_lancet()
+
+# Site7
+#Factor Depth_cm 
+av2_s7$metadata$Depth <- factor(av2_s7$metadata$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+# rank abundance
+rank_ab_s7 <- amp_rankabundance(av2_s7, log10_x = TRUE, group_by = "Depth") +
+  scale_color_lancet()
+```
+
+**Core**
+
+```{r}
+library(ampvis2)
+library(ggplot2)
+
+#Factor Depth_cm 
+av2_full_core$metadata$Depth <- factor(av2_full_core$metadata$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+
+# rank abundance
+rank_ab_full_core <- amp_rankabundance(av2_full_core, log10_x = TRUE, group_by = "Depth") +
+  scale_color_lancet()
+
+rank_ab_full_core
+```
+
+
+
+**Combine**
+
+```{r}
+library(cowplot)
+#Combine euler plot
+title_rank_plot <- ggdraw() + draw_label("Relative diversity and species evenness", fontface = 'bold', x = 0.5, hjust = 0.5, size = 15)
+
+rank_ab_full_core_s1 <- plot_grid(rank_ab_full, rank_ab_full_core, rank_ab_s1, labels = c("F", "C", "S1"), ncol = 3)
+rank_ab_s2tos4 <- plot_grid(rank_ab_s2,rank_ab_s3, rank_ab_s4, labels = c("S2","S3", "S4"), ncol = 3)
+rank_ab_s5tos7 <- plot_grid(rank_ab_s5, rank_ab_s6, rank_ab_s7, labels = c("S5", "S6", "S7"), ncol = 3)
+rankabund_all_plots <- plot_grid(title_rank_plot, rank_ab_full_core_s1, rank_ab_s2tos4, rank_ab_s5tos7, ncol = 1,  rel_heights = c(0.14, 1, 1, 1))
+
+rankabund_all_plots
+```
+
+
+
+# Alpha diversity
+
+## Full
+
+### Get Hill numbers
+
+```{r}
+library(hilldiv)
+library(tidyverse)
+library(kableExtra)
+
+# Get hill numbers
+q0 <- hill_div(otu_table, qvalue = 0) 
+q1 <- hill_div(otu_table, qvalue = 1) 
+q2 <- hill_div(otu_table, qvalue = 2)
+
+# Merge metadata with Hill numbers
+q012_all <- cbind(q0, q1, q2) %>% as.data.frame() %>% rownames_to_column(var = "SampleID")
+metadata_with_hill <- q012_all %>%                                      
+  inner_join(metadata, by = c("SampleID"="SampleID"))
+
+#save table
+write.table(metadata_with_hill, "../results/05.diversity/Metadata_with_hill.tsv", quote = FALSE, sep = "\t", row.names = TRUE, col.names=TRUE)
+
+# show
+metadata_with_hill %>% head() %>% kable()
+```
+
+
+
+### Explore Hill distribution
+
+**Get means**
+
+```{r}
+# Reorder q values  
+meta_qs <- metadata_with_hill %>%
+    pivot_longer(cols = q0:q2, names_to = "q", values_to = "value") %>%
+    filter(q %in% c("q0", "q1", "q2")) %>%
+    mutate(
+        qs = case_when(
+            q == "q0" ~ "q=0",
+            q == "q1" ~ "q=1",
+            q == "q2" ~ "q=2"
+        ))
+
+#Get means of Hill numbers
+means <- meta_qs %>% group_by(Depth_cm, Site, qs) %>%
+  summarise(means = mean(value, na.rm = TRUE),
+            sd = sd(value, na.rm = TRUE),
+            .groups = 'drop')
+
+#save table
+write.table(means, "../results/05.diversity/Hill_means_sd.tsv", quote = FALSE, sep = "\t", row.names = TRUE, col.names=TRUE)
+
+print(means)
+```
+
+
+### Plot Hill distribution
+
+
+```{r}
+library(ggpubr) 
+
+# factor to reorder plot
+metadata_with_hill$Site <- factor(metadata_with_hill$Site)
+metadata_with_hill$Depth  <- factor(metadata_with_hill$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+
+
+#plot
+
+hill_barplot_explore <- metadata_with_hill %>%
+  pivot_longer(cols = q0:q2, names_to = "q", values_to = "value") %>%
+  filter(q %in% c("q0", "q1", "q2")) %>%
+  mutate(
+    qs = case_when(
+      q == "q0" ~ "q=0",
+      q == "q1" ~ "q=1",
+      q == "q2" ~ "q=2"
+    )) %>%
+  ggbarplot(
+    x = "Depth",
+    y = "value",
+    add = "mean_se",
+    facet.by = c("qs", "Site"),
+    fill = "Depth"
+  ) +
+  scale_fill_lancet() +
+  #geom_jitter(size = 0.8, position = position_jitter(width = 0.1)) +
+  facet_grid(rows = vars(qs), cols = vars(Site), scales = "free_y") +
+  theme(
+    strip.background =  element_blank(), #element_rect(fill = "")
+    strip.text.x = element_text(face= "bold", size = 13, margin = margin(0.5, 0, 0.5, 0)),
+    strip.text.y = element_text(face= "bold", size = 14, angle = 0, margin = margin(0, 0.5, 0, 0.5)),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.line = element_line(colour = "black"),
+    #panel.border = element_blank(),
+    panel.spacing.x = unit(0.5, "lines"),
+    panel.background = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.y = element_text(colour = "black", size = 11),
+    legend.position = "bottom"
+  ) +
+  labs(
+    fill = "Depth",
+    y = "",
+    x = "",
+    title = "Biodiversity across Sites and Depths"
+  ) + 
+   theme(legend.text = element_text(size = 12))
+
+hill_barplot_explore
+
+#ggsave("../results/plots/Hill_diversity_across_Sites_and_Depths_fltr.png", hill_barplot_explore_fltr, width = 11, height = 11)
+
+```
+
+
+
+### Depth vs Hill Correlation
+
+**Alpha diversity depth correlation to order q=0**
+
+```{r}
+#Get effective reads
+Effective_reads <- colSums(otu_table[-1, ])
+metadata_with_hill$Effective_reads <- Effective_reads
+```
+
+
+```{r}
+#install.packages("ggpubr")
+library(ggpubr)
+
+q0_vs_depth <- ggscatter(metadata_with_hill, 
+                         x = "Effective_reads", 
+                         y = "q0", 
+                         xlab= "Sequencing depth (number of reads)",
+                         ylab = "q=0",
+                         #ylab="Alpha diversity q=0 (effective number of total ASVs)",
+   add = "reg.line",  # Add regression line
+   add.params = list(color = "#114e9d", fill = "lightgray"), # Customize reg. line
+   conf.int = TRUE, # Add confidence interval
+   cor.coef = TRUE, # Add correlation coefficient. see ?stat_cor
+   cor.coeff.args = list(method = "pearson", label.x = 3, label.sep = "\n")
+   )+
+  theme(legend.title = element_blank(), legend.position = "none")
+
+```
+
+
+**Alpha diversity depth correlation to order q=1**
+
+```{r}
+q1_vs_depth <- ggscatter(metadata_with_hill, 
+                         x = "Effective_reads", 
+                         y = "q1", 
+                         xlab= "Sequencing depth (number of reads)",
+                         ylab = "q=1",
+                         #ylab="Alpha diversity q=1 (effective number of total ASVs)",
+   add = "reg.line",  # Add regression line
+   add.params = list(color = "#114e9d", fill = "lightgray"), # Customize reg. line
+   conf.int = TRUE, # Add confidence interval
+   cor.coef = TRUE, # Add correlation coefficient. see ?stat_cor
+   cor.coeff.args = list(method = "pearson", label.x = 3, label.sep = "\n")
+   )+
+  theme(legend.title = element_blank(), legend.position = "none")
+
+```
+
+
+**Alpha diversity depth correlation to order q=2**
+
+```{r}
+q2_vs_depth <- ggscatter(metadata_with_hill, 
+                         x = "Effective_reads", 
+                         y = "q2", 
+                         xlab= "Sequencing depth (number of reads)",
+                         ylab = "q=2",
+                         #ylab="Alpha diversity q=2 (effective number of total ASVs)",
+   add = "reg.line",  # Add regression line
+   add.params = list(color = "#114e9d", fill = "lightgray"), # Customize reg. line
+   conf.int = TRUE, # Add confidence interval
+   cor.coef = TRUE, # Add correlation coefficient. see ?stat_cor
+   cor.coeff.args = list(method = "pearson", label.x = 3, label.sep = "\n")
+   )+
+  theme(legend.title = element_blank(), legend.position = "none")
+
+```
+
+```{r}
+library(ggplot2)
+library(cowplot)
+
+#save plots
+
+#Combine plot
+title_corr_plot <- ggdraw() + draw_label("Alpha diversity depth correlation with fltr samples")
+correlation_plot_q012 <- plot_grid(title_corr_plot, q0_vs_depth, q1_vs_depth, q2_vs_depth, labels = c(" ","A", "B", "C"), ncol = 1, rel_heights = c(0.15, 1, 1, 1))
+correlation_plot_q012
+#save plot
+#ggsave("../results/plots/alpha_depth_correlation_samples.png", correlation_plot_q012_, width = 8, height = 8)
+```
+
+
+### Check Hill numbers Normality
+
+Shapiro test to Hill numbers
+
+
+```{r}
+library(ggplot2)
+library(cowplot)
+
+#Shapiro test
+shapiro_q0 <- shapiro.test(metadata_with_hill$q0)
+shapiro_q0_pvalue <- round(shapiro_q0$p.value, 5)
+shapiro_q1 <- shapiro.test(metadata_with_hill$q1)
+shapiro_q1_pvalue <- round(shapiro_q1$p.value, 5)
+shapiro_q2 <- shapiro.test(metadata_with_hill$q2)
+shapiro_q2_pvalue <- round(shapiro_q2$p.value, 5)
+
+#Histograms
+histplot_q0 <- ggplot(metadata_with_hill, aes(x = q0, xlab="q=0")) +
+  geom_histogram(fill = "lightblue", bins = 15) +
+  ggtitle(paste("Shapiro, p-value:", shapiro_q0_pvalue)) +
+  theme_bw() + xlab("q=0") + ylab("Frequency")
+
+histplot_q1 <- ggplot(metadata_with_hill, aes(x = q1)) +
+  geom_histogram(fill = "lightblue", bins = 15) +
+  ggtitle(paste("Shapiro, p-value:", shapiro_q1_pvalue)) +
+  theme_bw() + xlab("q=1") + ylab("Frequency")
+
+histplot_q2 <- ggplot(metadata_with_hill, aes(x = q2)) +
+  geom_histogram(fill = "lightblue", bins = 15) +
+  ggtitle(paste("Shapiro, p-value:", shapiro_q2_pvalue)) +
+  theme_bw() + xlab("q=2") + ylab("Frequency")
+
+#Combine plot
+title_plot <- ggdraw() + draw_label("Histogram of Hill diversity") #, fontface = 'bold', x = 0.5, hjust = 0.5)
+histplot_q012 <- plot_grid(title_plot, histplot_q0, histplot_q1, histplot_q2, labels = c(" ","A", "B", "C"), ncol = 1, rel_heights = c(0.15, 1, 1, 1))
+histplot_q012
+#save plot
+#ggsave("../results/plots/hill_normality_test_histogram_samples.png", histplot_q012)
+```
+
+
+A pesar de que tienen una distribución normal, dado que los datos del proyecto tienen medidas repetidas y desbalanceo, lo adecuado es hacer comparaciones basadas en modelos. En este caso modelos lineales mixtos
+
+
+### Models
+
+#### Linear Mixed Models 
+
+Estos modelos son útiles cuando las observaciones tienen estructuras de dependencia, como datos longitudinales o datos agrupados/anidados. Los modelos lineales mixtos incluyen tanto efectos fijos como efectos aleatorios, donde los efectos fijos son comunes a todas las unidades/individuos, y los efectos aleatorios varían por grupo o unidad. 
+
+
+**lme**
+
+```{r}
+library(nlme)
+library(pgirmess)
+# lme
+
+# q0
+q0_lme <- lme(q0 ~ log(Effective_reads)+Depth_cm+Site, random=~1 |ID, data = metadata_with_hill)
+q0_lme_perm <- PermTest(q0_lme, B = 100)
+
+# q1
+q1_lme <- lme(q1 ~ Depth_cm+Site, random=~1 |ID, data = metadata_with_hill)
+q1_lme_perm <- PermTest(q1_lme, B = 100)
+
+# q2
+q2_lme <- lme(q2 ~ Depth_cm+Site, random=~1 |ID, data = metadata_with_hill)
+q2_lme_perm <- PermTest(q2_lme, B = 100)
+```
+
+
+**Effect**
+
+```{r}
+
+# extract p-values fun
+extract_pvalues <- function(perm_test_result) {
+  perm_test_result$resultats$p.value  
+}
+
+# extract
+lme_pvalues_q0 <- extract_pvalues(q0_lme_perm)
+lme_pvalues_q1 <- extract_pvalues(q1_lme_perm)
+lme_pvalues_q2 <- extract_pvalues(q2_lme_perm)
+
+# Dataframe  p-values
+library(dplyr)
+
+lme_pvalues_table <- data.frame(
+  Hill = c("q0", "q1", "q2"),
+  `Intercept` = c(lme_pvalues_q0[1], lme_pvalues_q1[1], lme_pvalues_q2[1]),
+  `ER` = c(lme_pvalues_q0[2], lme_pvalues_q1[2], lme_pvalues_q2[2]),
+  `Depth` = c(lme_pvalues_q0[3], lme_pvalues_q1[3], lme_pvalues_q2[3]),
+  `Site` = c(lme_pvalues_q0[4], lme_pvalues_q1[4], lme_pvalues_q2[4])
+  #`Depth:Loc` = c(lme_pvalues_q0[5], lme_pvalues_q1[5], lme_pvalues_q2[5])
+)
+
+# table
+knitr::kable(t(lme_pvalues_table), caption = "P-values from Permuted LME")
+
+# save 
+write.csv(t(lme_pvalues_table), "../results/05.diversity/P-values_from_Permuted_LME.csv", row.names = FALSE)
+```
+
+
+
+
+```{r}
+q0_lme_perm
+```
+
+
+**Check with easystats**
+
+**q=0**
+
+```{r}
+library(easystats)
+
+check_q0_lme_1 <- check_heteroscedasticity(q0_lme)
+print(check_q0_lme_1)
+check_homogeneity(q0_lme)
+```
+
+**q=1**
+
+```{r}
+check_q1_lme_1 <- check_model(q1_lme)
+print(check_q1_lme_1)
+```
+
+
+**q=2**
+
+```{r}
+check_q2_lme_1 <- check_model(q2_lme)
+
+check_q2_lme_1
+```
+
+#### Generalized Linear Mixed Model
+
+**glm quasipoisson**
+
+```{r eval=FALSE, include=FALSE}
+#q0 glm quasipoissonlog
+q0_glm_quasipoisson <- glm(q0 ~ log(Effective_reads)+Depth_cm*Site+(1|ID),
+              family = quasipoisson(link = "log"),
+              data = metadata_with_hill)
+
+#q1 glm quasipoisson
+q1_glm_quasipoisson <- glm(q1 ~ log(Effective_reads)+Depth_cm*Site+(1|ID),
+              family = quasipoisson(link = "log"),
+              data = metadata_with_hill)
+
+#q2 glm quasipoisson
+q2_glm_quasipoisson <- glm(q1 ~ log(Effective_reads)+Depth_cm*Site+(1|ID),
+              family = quasipoisson(link = "log"),
+              data = metadata_with_hill)
+```
+
+```{r eval=FALSE, include=FALSE}
+summary(q0_glm_quasipoisson)
+```
+```{r eval=FALSE, include=FALSE}
+summary(q1_glm_quasipoisson)
+```
+
+
+```{r eval=FALSE, include=FALSE}
+summary(q2_glm_quasipoisson)
+```
+```{r eval=FALSE, include=FALSE}
+check_q1_glm_qp_1 <- check_model(q1_glm_quasipoisson)
+
+check_q1_glm_qp_1
+```
+
+
+
+
+# Beta diversity Diversity  
+
+## Full
+
+### clr manual
+
+**Prepare data**
+
+
+```{r include=FALSE}
+library(ALDEx2)
+aldex_clr <- aldex.clr(otu_table, mc.samples = 128,
+    denom = "all", verbose = FALSE, useMC = TRUE)
+```
+
+```{r}
+aldex_clr_data <- t(getMonteCarloSample(aldex_clr,1))
+pca <- prcomp(aldex_clr_data)
+
+meta=metadata_with_hill %>% dplyr::rename(SampleID="SampleID")
+```
+
+PCA
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+# Reorder
+meta$Depth <- factor(meta$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+
+# plot
+pca_plot <- ggplot(data = data.frame(pca$x) %>%
+                    rownames_to_column(var = "SampleID") %>%
+                    left_join(meta, by = "SampleID")) +
+  geom_segment(data = data.frame(pca$rotation) %>%
+                rownames_to_column(var = "Feature.ID") %>%
+                mutate(a = sqrt(PC1^2 + PC2^2)) %>%
+                top_n(8, a) %>%
+                mutate(PC1 = PC1*50, PC2 = PC2*50),
+                aes(x = 0, xend = PC1, y = 0, yend = PC2)) +
+  geom_point(aes(x = PC1, y = PC2, color = Depth, shape = Site), size = 3) +
+  geom_vline(xintercept = 0, linetype = 2) +
+  geom_hline(yintercept = 0, linetype = 2) +
+  scale_color_lancet() + 
+  scale_shape_manual(values = c(15, 16, 17, 18, 23, 24, 25)) +
+  scale_fill_lancet() +
+  theme(axis.text = element_text(colour = "black", size = 12),
+        axis.title = element_text(colour = "black", size = 12),
+        legend.text = element_text(size = 10),
+        legend.title = element_text(size = 12), 
+        legend.position = "right", 
+        legend.box = "vertical") +
+  labs(y = "PC2", x = "PC1", color = "Depth", shape = "Site") +
+   theme_bw()
+
+pca_plot
+```
+
+### bray
+
+```{r}
+# Bray NMDS bray
+library(vegan)
+bray=vegdist(t(otu_table), method = "bray")
+nmds_source_bray = vegan::metaMDS(bray, trymax = 20, k = 2) 
+var_stress_nmds_bray <- round(nmds_source_bray$stress, 5)
+var_stress_nmds_bray
+
+scores_source_bray= nmds_source_bray %>% vegan::scores() 
+metadata$Depth <- factor(metadata$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+
+nmds_plot_bray<- ggplot() +
+      geom_point(data=data.frame(scores_source_bray) %>% 
+                 rownames_to_column(var = "SampleID")%>%
+                 left_join(metadata, by = "SampleID"),
+               aes(x=NMDS1, y=NMDS2,  color = Depth, shape = Site), size=5) +
+    theme_linedraw()+
+    scale_fill_lancet()+ 
+    scale_color_lancet()+
+    scale_shape_manual(values = c(15, 16, 17, 18, 23, 24, 25)) +
+    theme(axis.text = element_text(colour = "black", size = 12),
+          axis.title = element_text(colour = "black", size = 12),
+          legend.text = element_text(size = 10),
+          legend.title = element_text(size = 12), 
+          legend.position = "right", 
+          legend.box = "vertical")+ theme_bw() +
+    labs(title="NMDS, Bray-Curtis distances") + 
+  ylab("NMDS2")+xlab("NMDS1")
+
+nmds_plot_bray <- nmds_plot_bray +
+  annotate("text", x = Inf, y = -Inf, label = paste("Stress:", var_stress_nmds_bray),
+           hjust = 3.1, vjust = -1.9, size = 3)
+nmds_plot_bray
+```
+
+### aitchison
+
+```{r}
+# NMDS aichitson
+library(vegan)
+pseudocount <- 1
+otu_table_pseudo <- otu_table + pseudocount
+aitch=vegdist(t(otu_table_pseudo), method = "aitchison")
+nmds_source_aitch = vegan::metaMDS(aitch, trymax = 20, k = 2) 
+var_stress_nmds_aitch <- round(nmds_source_aitch$stress, 5)
+var_stress_nmds_aitch
+
+scores_source_aitch= nmds_source_aitch %>% vegan::scores() 
+metadata$Depth <- factor(metadata$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+
+nmds_plot_aitch<- ggplot() +
+      geom_point(data=data.frame(scores_source_aitch) %>%
+                 rownames_to_column(var = "SampleID")%>%
+                 left_join(metadata, by = "SampleID"),
+               aes(x=NMDS1, y=NMDS2,  color = Depth, shape = Site), size=5) +
+  #  theme_linedraw()+
+    scale_fill_lancet()+ 
+    scale_color_lancet()+ 
+    scale_shape_manual(values = c(15, 16, 17, 18, 23, 24, 25)) +
+    theme(axis.text = element_text(colour = "black", size = 12),
+          axis.title = element_text(colour = "black", size = 12),
+          legend.text = element_text(size = 10),
+          legend.title = element_text(size = 12), 
+          legend.position = "right", 
+          legend.box = "vertical")+ theme_bw() +
+          labs(title="NMDS, Aitchison distances") + 
+  ylab("NMDS2")+xlab("NMDS1")
+
+nmds_plot_aitch <- nmds_plot_aitch +
+  annotate("text", x = Inf, y = -Inf, label = paste("Stress:", var_stress_nmds_aitch),
+           hjust = 3.1, vjust = -1.9, size = 3)
+nmds_plot_aitch
+```
+
+
+```{r}
+library(vegan)
+bray_dist =vegdist(t(otu_table), method = "bray")
+pcoas=wcmdscale(bray_dist, eig = T)
+metadata$Depth <- factor(metadata$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+
+pcoa_plot<- ggplot() +
+      geom_point(data=data.frame(pcoas$points) %>% #individuals
+                 rownames_to_column(var = "SampleID")%>%
+                 left_join(metadata, by = "SampleID"),
+               aes(x=Dim1, y=Dim2,color = Depth, shape = Site ), size=4) +
+    geom_vline(xintercept = 0, linetype = 2) +   #lines-cross
+    geom_hline(yintercept = 0, linetype = 2) +
+    theme_linedraw()+
+    scale_fill_lancet()+ 
+    scale_color_lancet()+ 
+    scale_shape_manual(values = c(15, 16, 17, 18, 23, 24, 25)) +
+    theme(axis.text = element_text(colour = "black", size = 12),
+          axis.title = element_text(colour = "black", size = 12),
+          legend.text = element_text(size = 10),
+          legend.title = element_text(size = 12), 
+          legend.position = "right", 
+          legend.box = "vertical")+ theme_bw()+
+  labs(title="PCoA, Bray-Curtis distances")+
+  ylab("PCoA2")+xlab("PCoA1")
+pcoa_plot
+```
+
+```{r}
+
+#Combine plot
+nmds_bray_aitch <- plot_grid(nmds_plot_bray, nmds_plot_aitch, labels = c("A", "B"), ncol = 2)
+
+nmds_bray_aitch
+```
+
+
+
+### Permanova
+
+
+```{r}
+meta_just = data.frame(t(otu_table_pseudo), check.names = F) %>% rownames_to_column(var = "SampleID") %>% inner_join(metadata_with_hill)
+
+permanovas = adonis2(t(otu_table_pseudo) ~ log(Effective_reads)+Depth_cm*Site,
+                     data=meta_just, method = "aitchison", 
+                     permutations = 999, strata = meta_just$ID)
+permanovas
+```
+
+
+
+## Core
+
+
+### Aitchison
+
+**Prepare data**
+
+**Explore**
+
+```{r}
+microbiome::summarize_phyloseq(full_ps_core_counts)
+```
+
+```{r}
+#Get otu and metadata table of core phyloseq object
+# extract otu table
+otu_table_full_core <- otu_table(full_ps_core_counts@otu_table)
+meta_full_core <- sample_data(full_ps_core_counts)
+```
+
+
+
+```{r}
+# NMDS aichitson
+library(vegan)
+pseudocount <- 1
+otu_table_full_core_pseudo <- otu_table_full_core + pseudocount
+aitch_fc=vegdist(t(otu_table_full_core_pseudo), method = "aitchison")
+nmds_source_aitch_fc = vegan::metaMDS(aitch_fc, trymax = 20, k = 2) 
+var_stress_nmds_aitch_fc <- round(nmds_source_aitch_fc$stress, 5)
+var_stress_nmds_aitch_fc
+
+scores_source_aitch_fc= nmds_source_aitch_fc %>% vegan::scores() 
+meta_full_core$Depth <- factor(meta_full_core$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+
+nmds_plot_aitch_fc<- ggplot() +
+      geom_point(data=data.frame(scores_source_aitch_fc) %>% 
+                 rownames_to_column(var = "Sample")%>%
+                 left_join(meta_full_core, by = "Sample"),
+               aes(x=NMDS1, y=NMDS2,  color = Depth, shape = Site), size=4) +
+    scale_fill_lancet()+
+    scale_color_lancet()+
+    scale_shape_manual(values = c(15, 16, 17, 18, 23, 24, 25)) +
+    theme(axis.text = element_text(colour = "black", size = 12),
+          axis.title = element_text(colour = "black", size = 12),
+          legend.text = element_text(size = 10),
+          legend.title = element_text(size = 12), 
+          legend.position = "right", 
+          legend.box = "vertical")+ theme_bw() +
+  labs(title="NMDS, Aitchison distances Core") +
+  ylab("NMDS2")+xlab("NMDS1")
+
+nmds_plot_aitch_fc <- nmds_plot_aitch_fc +
+  annotate("text", x = Inf, y = -Inf, label = paste("Stress:", var_stress_nmds_aitch_fc),
+           hjust = 3.1, vjust = -1.9, size = 3)
+nmds_plot_aitch_fc
+```
+
+```{r}
+#Combine plot
+nmds_aitch_full_core <- plot_grid(nmds_plot_aitch, nmds_plot_aitch_fc, labels = c("A", "B"), ncol = 2)
+
+nmds_aitch_full_core
+```
+
+
+### Permanova
+
+```{r}
+pseudocount <- 1
+otu_table_full_core_pseudo <- otu_table_full_core + pseudocount
+#Get effective reads
+Effective_reads_core <- colSums(otu_table_full_core[-1, ])
+meta_full_core$Effective_reads <- Effective_reads_core
+```
+
+```{r}
+meta_core_pseudo = data.frame(t(otu_table_full_core_pseudo), check.names = F) %>% 
+  rownames_to_column(var = "Sample") %>% inner_join(meta_full_core) 
+perm_core = adonis2(t(otu_table_full_core_pseudo) ~ log(Effective_reads)+Depth_cm*Site,
+                     data=meta_core_pseudo, method = "aitchison", 
+                     permutations = 999, strata = meta_core_pseudo$ID)
+perm_core
+```
+
+
+
+# Core Microbiome
+
+
+**Microbiome**
+
+Based [here](https://microbiome.github.io/tutorials/core_venn.html)
+
+**Calculate core between Depths**
+
+```{r}
+# count number of samples in each group
+table(meta(ps)$Depth_cm, useNA = "always")
+```
+
+
+## Full Core Depth
+
+
+```{r}
+#List of Depths
+Depths <- unique(as.character(meta(ps_full_rel_f)$Depth_cm))
+print(Depths)
+```
+
+
+```{r}
+#Write a for loop to go through each of the Depths one by one and combine identified core taxa into a list.
+
+list_core_full <- list()# an empty object to store information
+
+for (Depth_cm in Depths){ 
+    #print(paste0("Identifying Core Taxa for ", Depth))
+    
+    ps_sub_full <- subset_samples(ps_full_rel_f, Depth_cm == Depth_cm ) 
+    
+    core_m_full <- core_members(ps_sub_full,
+                           detection = 0, # 100 % samples 
+                           prevalence = 0.5) # 50% prevalence
+    print(paste0("No. of core taxa in ", Depth_cm, " : ", length(core_m_full)))
+   
+     # add to a list core taxa for each group.
+    list_core_full[[Depth_cm]] <- core_m_full
+    
+    #create core depth variable
+    variable_name_full <- paste0("core_full_", gsub(" ", "_", Depth_cm))
+    assign(variable_name_full, core_m_full, envir = .GlobalEnv)
+    
+    #write all cores
+    file_name_full <- paste0("../results/05.diversity/",variable_name_full,".csv")
+    write.csv(core_m_full, file = file_name_full, row.names = FALSE)
+
+}
+```
+
+**Plot venn diagram**
+
+
+```{r}
+library(VennDiagram)
+
+# Extract lancet Depth colors
+depth_colors <- scale_fill_lancet()$palette(4)
+
+# plot
+venn_plot_full <- venn.diagram(
+  x = list_core_full,
+  filename = NULL,
+  #filename = "../results/05.diversity/Venn_full.png",
+  category.names = c("0-15", "16-30", "31-45", "50-75"),
+  output = TRUE,
+  #imagetype = "png",
+  height = 2000,
+  width = 2000,
+  resolution = 300,
+  compression = "lzw",
+  #units = "px",
+  lwd = 2,
+  lty = 'blank',
+  fontfamily ="sans",
+  fill = depth_colors,
+  cat.fontfamily = "sans",
+  cat.cex = 1.85,
+  cat.default.pos = "outer")
+
+# Show
+grid.draw(venn_plot_full)
+```
+
+```{r}
+library(UpSetR)
+
+
+# Convert UpSetR  fromList
+full_core_data <- fromList(list_core_full)
+
+# UpSet plot
+upset_full_depth <- upset(full_core_data, nsets = 4, decreasing = T, order.by = "freq", keep.order = TRUE, main.bar.color = "black", sets.bar.color = depth_colors)
+
+upset_full_depth
+```
+
+
+**Get core identities**
+
+```{r eval=FALSE, include=FALSE}
+# Asegurarse de que list_core está en el orden deseado
+list_core_ordered <- list_core_full[c("Soil associated", "Rhizhomorph", "Stipe")]
+
+# Intersecciones entre cada par de Depths
+soil_rhizo_shared <- intersect(list_core_ordered[["Soil associated"]], list_core_ordered[["Rhizhomorph"]])
+rhizo_stipe_shared <- intersect(list_core_ordered[["Rhizhomorph"]], list_core_ordered[["Stipe"]])
+soil_stipe_shared <- intersect(list_core_ordered[["Soil associated"]], list_core_ordered[["Stipe"]])
+
+# Intersección entre los tres Depths
+all_shared <- Reduce(intersect, list_core_ordered)
+
+# Únicos para cada Depth
+soil_unique <- setdiff(list_core_ordered[["Soil associated"]], union(list_core_ordered[["Rhizhomorph"]], list_core_ordered[["Stipe"]]))
+rhizo_unique <- setdiff(list_core_ordered[["Rhizhomorph"]], union(list_core_ordered[["Soil associated"]], list_core_ordered[["Stipe"]]))
+stipe_unique <- setdiff(list_core_ordered[["Stipe"]], union(list_core_ordered[["Soil associated"]], list_core_ordered[["Rhizhomorph"]]))
+
+# Compartidos entre dos, pero no con el tercero
+soil_rhizo_not_stipe <- setdiff(soil_rhizo_shared, list_core_ordered[["Stipe"]])
+rhizo_stipe_not_soil <- setdiff(rhizo_stipe_shared, list_core_ordered[["Soil associated"]])
+soil_stipe_not_rhizo <- setdiff(soil_stipe_shared, list_core_ordered[["Rhizhomorph"]])
+```
+
+
+```{r eval=FALSE, include=FALSE}
+# Convierte cada conjunto de ASVs en una cadena de texto separada por comas
+soil_unique_str <- toString(soil_unique)
+rhizo_unique_str <- toString(rhizo_unique)
+stipe_unique_str <- toString(stipe_unique)
+soil_rhizo_shared_str <- toString(soil_rhizo_shared)
+rhizo_stipe_shared_str <- toString(rhizo_stipe_shared)
+soil_stipe_shared_str <- toString(soil_stipe_shared)
+soil_rhizo_not_stipe_str <- toString(soil_rhizo_not_stipe)
+rhizo_stipe_not_soil_str <- toString(rhizo_stipe_not_soil)
+soil_stipe_not_rhizo_str <- toString(soil_stipe_not_rhizo)
+all_shared_str <- toString(all_shared)
+
+# Crear una tabla (data.frame) con los resultados como cadenas de texto
+venn_results_full <- data.frame(
+  Soil_Unique = soil_unique_str,
+  Rhizhomorph_Unique = rhizo_unique_str,
+  Stipe_Unique = stipe_unique_str,
+  Soil_Rhizhomorph_Shared = soil_rhizo_shared_str,
+  Rhizhomorph_Stipe_Shared = rhizo_stipe_shared_str,
+  Soil_Stipe_Shared = soil_stipe_shared_str,
+  Soil_Rhizo_Not_Stipe = soil_rhizo_not_stipe_str,
+  Rhizo_Stipe_Not_Soil = rhizo_stipe_not_soil_str,
+  Soil_Stipe_Not_Rhizo = soil_stipe_not_rhizo_str,
+  All_Shared = all_shared_str,
+  stringsAsFactors = FALSE
+)
+
+#Save results
+write.csv(venn_results_full, file = "results/03.Diversity/venn_ASVs_results_full.csv", row.names = FALSE)
+
+# 
+print(venn_results_full)
+
+```
+
+
+## Full Core Site
+
+
+```{r}
+#List of Depths
+sites <- unique(as.character(meta(ps_full_rel_f)$Site))
+print(sites)
+```
+
+
+```{r}
+#Write a for loop to go through each of the Depths one by one and combine identified core taxa into a list.
+
+list_core_sites_full <- list()# an empty object to store information
+
+for (site in sites){ 
+    #print(paste0("Identifying Core Taxa for ", Depth))
+    
+    ps_sub_full <- subset_samples(ps_full_rel_f, Site == site) 
+    
+    core_m_full <- core_members(ps_sub_full,
+                           detection = 0, # 100 % samples 
+                           prevalence = 0.5) # 50% prevalence
+    print(paste0("No. of core taxa in ", site, " : ", length(core_m_full)))
+   
+     # add to a list core taxa for each group.
+    list_core_sites_full[[site]] <- core_m_full
+    
+    #create core depth variable
+    variable_name_full <- paste0("core_full_", gsub(" ", "_", site))
+    assign(variable_name_full, core_m_full, envir = .GlobalEnv)
+    
+    #write all cores
+    file_name_full <- paste0("../results/05.diversity/",variable_name_full,".csv")
+    write.csv(core_m_full, file = file_name_full, row.names = FALSE)
+
+}
+```
+
+**Upset diagram**
+
+
+```{r}
+library(UpSetR)
+
+sites_colors <- scale_fill_d3()$palette(7)
+# Convert UpSetR  fromList
+input_data <- fromList(list_core_sites_full)
+
+# UpSet plot
+upset_full_sites <- upset(input_data, nsets = 7, decreasing = T, order.by = "freq", keep.order = TRUE, main.bar.color = "black", sets.bar.color = sites_colors)
+
+upset_full_sites
+```
+
+

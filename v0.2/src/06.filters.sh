@@ -19,15 +19,15 @@ qiime feature-table filter-features --i-table  results/04.qiime/ASV_table.qza \
 qiime feature-table summarize --i-table results/04.qiime/ASV_table_filter_freq218.qza \
  --o-visualization results/04.qiime/ASV_table_filter_freq218.qzv
 
-#Filter Mitochondria, chloroplast, Archaea and Eukaryota
+#Filter Mitochondria, chloroplast and Eukaryota
 
 qiime taxa filter-table --i-table results/04.qiime/ASV_table_filter_freq218.qza \
- --i-taxonomy results/04.qiime/taxonomy.qza --p-exclude Archaea,Eukaryota,Mitochondria,Chloroplast \
- --p-include p__ --o-filtered-table results/04.qiime/ASV_table_filter_freq218_aemc.qza
+ --i-taxonomy results/04.qiime/taxonomy.qza --p-exclude Eukaryota,Mitochondria,Chloroplast \
+ --p-include p__ --o-filtered-table results/04.qiime/ASV_table_filter_freq218_emc.qza
 
-qiime feature-table summarize --i-table results/04.qiime/ASV_table_filter_freq218_aemc.qza \
- --o-visualization results/04.qiime/ASV_table_filter_freq218_aemc.qzv
+qiime feature-table summarize --i-table results/04.qiime/ASV_table_filter_freq218_emc.qza \
+ --o-visualization results/04.qiime/ASV_table_filter_freq218_emc.qzv
 
 #remove in fasta sequences
-qiime feature-table filter-seqs  --i-table results/04.qiime/ASV_table_filter_freq218_aemc.qza \
+qiime feature-table filter-seqs  --i-table results/04.qiime/ASV_table_filter_freq218_emc.qza \
  --i-data results/04.qiime/ASV_rep_seq.qza --o-filtered-data results/04.qiime/ASV_rep_seq_filters.qza

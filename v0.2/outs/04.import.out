@@ -1,0 +1,2 @@
+Imported results/03.Dada2/ASVs.fasta as DNASequencesDirectoryFormat to results/04.qiime/ASV_rep_seq.qza
+Imported temp.biom as BIOMV210Format to results/04.qiime/ASV_table.qza

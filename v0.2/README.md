@@ -98,12 +98,16 @@ echo $! > outs/07.phylogeny_PID.txt
 ps -f -p $(cat outs/07.phylogeny_PID.txt)
 ```
 
-### 08. Diversity
+### 08. Exports
 
-check src/
 
 ```bash
 
-nohup Rscript src/09.accumulative_curves.sh > outs/09.accumulative_curves.out 2> outs/09.accumulative_curves.error &
+bash src/08.exports.sh 1> outs/08.exports.out
 
 ```
+
+### 09. Explore Diversity
+
+check `**src/Interior_Mangroove_Sediments**`
+

@@ -1,0 +1,10 @@
+Thu May  2 10:51:00 MST 2024
+ Start taxonomy classification: 
+Saved FeatureData[Taxonomy] to: results/04.qiime/taxonomy.qza
+Thu May  2 11:06:00 MST 2024
+ Get tax visualization 
+Saved Visualization to: results/04.qiime/taxonomy.qzv
+ Get rep seqs visualization 
+Saved Visualization to: results/04.qiime/ASV_rep_seq.qzv
+Finish tax process
+Thu May  2 11:06:50 MST 2024
