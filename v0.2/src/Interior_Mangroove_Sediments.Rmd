@@ -25,7 +25,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # Data Prepare
 
 ```{r eval=FALSE, include=FALSE}
-load("src/Diversity.RData")
+load("Diversity.RData")
 ```
 
 **Load data**
@@ -36,7 +36,66 @@ library(qiime2R)
 otu_table <- read_qza("../results/04.qiime/ASV_table_filter_freq218_emc.qza")$data
 metadata <- read.delim("../data/metadata.tsv", check.names = F)
 taxonomy <- read.delim("../results/04.qiime/exports/taxonomy_withoutconf.tsv", check.names = F)
+tree <- read_qza("../results/04.qiime/rooted-tree-iqtree.qza")$data
 ```
+
+```{r}
+#libary(ape)
+tree_umMPL <- chronoMPL(tree)
+tree_umML <- chronos(tree)
+
+# Setting initial dates...
+# Fitting in progress... get a first set of estimates
+#          (Penalised) log-lik = -498510881 
+# Optimising rates... dates... -498510881 
+# Optimising rates... dates... -4917786 
+# Optimising rates... dates... -331207.9 
+# Optimising rates... dates... -293935.1 
+# Optimising rates... dates... -229554.2 
+# Optimising rates... dates... -125996.1 
+# Optimising rates... dates... -109724.3 
+# Optimising rates... dates... -98461.45 
+# Optimising rates... dates... -94000.75 
+# Optimising rates... dates... -81558.22 
+# Optimising rates... dates... -76824.92 
+# Optimising rates... dates... -71024.52 
+# Optimising rates... dates... -64359.74 
+# Optimising rates... dates... -55484.81 
+# Optimising rates... dates... -53416.24 
+# Optimising rates... dates... -51576.2 
+# Optimising rates... dates... -49662.46 
+# Optimising rates... dates... -47793.22 
+# Optimising rates... dates... -45444.17 
+# Optimising rates... dates... -44060.12 
+# Warning: Maximum number of dual iterations reached.Warning: function evaluation limit reached without convergence (9)
+# log-Lik = -1961.029 
+# PHIIC = 54506.34 
+```
+
+```{r}
+par(mfrow=c(1,3))
+plot(tree, edge.width = 2,
+     cex = 2,
+     main = "A) Non-ultrametric",
+     cex.main = 2)
+plot(tree_umMPL, edge.width = 2,
+     cex = 2,
+     main = "B) Ultrametric chronoMPL",
+     cex.main = 2)
+plot(tree_umML, edge.width = 2,
+     cex = 2,
+     main = "C) Ultrametric chronos",
+     cex.main = 2)
+```
+
+
+```{r}
+#ultrametric tree
+library(ape)
+
+write.tree(tree_umML, file = "../results/04.qiime/exports/rootedtree_umML_cronos.nwk")
+```
+
 
 **Check samples distribution**
 
@@ -49,14 +108,17 @@ dim(metadata)
 library(ggplot2)
 library(ggsci)
 
+#Factor Depth_cm 
+metadata$Location <- factor(metadata$Location, levels = c( "Dique Miguelito", "La Piedad", "El Cacahuate"))
+
 # plot
 samples_plot <- ggplot(metadata, aes(x = ID, y = ..count.., fill = Depth_cm)) +
   geom_bar(position = "dodge") +
-  facet_wrap(~ Site, scales = "free_x") + 
-  labs(title = "Samples by Site and Depth", y = "Number of Samples", x = "Site") +
+  facet_wrap(~ Location, scales = "free_x") + 
+  labs(title = "Samples by Site, AAD and Depth", y = "Number of Samples", x = "Site") +
   theme_bw() + 
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) + # Rotate labels 
-  scale_fill_lancet()
+  scale_fill_manual(values = depth_colors)
 
 
 #show
@@ -74,13 +136,20 @@ library(qiime2R)
 
 ps <- qza_to_phyloseq(
   features = "../results/04.qiime/ASV_table_filter_freq218_emc.qza",
-  #tree = "../results/04.qiime/rooted-tree-iqtree.qza",
+  tree = "../results/04.qiime/rooted-tree-iqtree.qza",
   taxonomy = "../results/04.qiime/taxonomy.qza",
   metadata = "../data/metadata.tsv")
 ```
 
 ```{r}
 ps
+```
+```{r}
+ps2 <- qza_to_phyloseq(
+  features = "../results/04.qiime/ASV_table_filter_freq218_emc.qza",
+  tree = "../results/04.qiime/rooted-tree-iqtree.qza",
+  taxonomy = "../results/04.qiime/taxonomy.qza",
+  metadata = "../data/metadata2.tsv")
 ```
 
 ## Clean taxonomy table
@@ -266,6 +335,17 @@ ps_s7_rel_f <- phyloseq_objects_rel$ps_s7
 ps_full_rel_f <- phyloseq_objects_rel$ps
 ```
 
+```{r}
+convert_to_compositional_and_index_reformat2 <- function(ps2) {
+  ps_rel2 <- microbiome::transform(ps2, "compositional")
+  ps_rel_f2 <- format_to_besthit(ps_rel2)
+  return(ps_rel_f2)
+}
+phyloseq_objects2 <- list(ps2 = ps2)
+phyloseq_objects_rel2 <- lapply(phyloseq_objects2, convert_to_compositional_and_index_reformat2)
+ps_full_rel_f2 <- phyloseq_objects_rel2$ps2
+ps_full_rel_f2
+```
 
 
 ## Full core object
@@ -350,6 +430,26 @@ av2_s5 <- ampvis_objects$ps_s5
 av2_s6 <- ampvis_objects$ps_s6
 av2_s7 <- ampvis_objects$ps_s7
 ```
+## Color palettes
+
+```{r}
+depth_colors <- c("0-15" = "#f5e5c4",
+                 "16-30" = "#baa179",
+                 "31-45" = "#a67451",
+                 "50-75" = "#80673b")
+```
+
+
+```{r}
+# Reordenar los niveles de 'Location' para que 'Dique Miguelito' sea el último
+sample_data(ps)$Location <- factor(sample_data(ps)$Location, levels = c("El Cacahuate", "La Piedad", "Dique Miguelito"))
+loc_colors <- setNames(c("#A3D9A8", "#44C17B", "#2E8B57"), levels(sample_data(ps)$Location))
+print(loc_colors)
+
+# loc_colors <- c("El Cacahuate" = "#A3D9A8",
+#                 "La Piedad" = "#44C17B",
+#                 "Dique Miguelito" =  "#2E8B57")
+```
 
 
 # Abundances
@@ -383,14 +483,68 @@ ampv_heatmap_abundances_phylum_full <- amp_heatmap(av2_full,
             facet_by = "Site",
             plot_values = TRUE,
             tax_show = 25,
+            showRemainingTaxa = TRUE,
+            tax_aggregate = "Phylum",
+            tax_add = "Kingdom",
+            plot_colorscale = "log10",
+            plot_legendbreaks = c(0.1, 10, 25, 38),
+            color_vector = c("white","deepskyblue3","magenta3"))
+
+ampv_heatmap_abundances_phylum_full
+```
+
+```{r}
+ampv_heatmap_abundances_phylum_loc_full <- amp_heatmap(av2_full,
+            group_by = "Depth",
+            facet_by = "Location",
+            plot_values = TRUE,
+            tax_show = 25,
+            showRemainingTaxa = TRUE,
             tax_aggregate = "Phylum",
             tax_add = "Kingdom",
             plot_colorscale = "log10",
             plot_legendbreaks = c(1, 5, 5),
             color_vector = c("white","deepskyblue3","magenta3"))
 
-ampv_heatmap_abundances_phylum_full
+ampv_heatmap_abundances_phylum_loc_full
 ```
+
+```{r}
+ampv_heatmap_abundances_phylum_depth_full <- amp_heatmap(av2_full,
+            group_by = "Depth",
+            #facet_by = "Location",
+            plot_values = TRUE,
+            tax_show = 25,
+            showRemainingTaxa = TRUE,
+            tax_aggregate = "Phylum",
+            tax_add = "Kingdom",
+            plot_colorscale = "log10",
+            plot_legendbreaks = c(1, 5, 5),
+            color_vector = c("white","deepskyblue3","magenta3"))
+
+ampv_heatmap_abundances_phylum_depth_full
+```
+
+
+```{r}
+#Factor Depth_cm 
+av2_full$metadata$Depth <- factor(av2_full$metadata$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+
+# Full all samples
+ampv_heatmap_abundances_class_full <- amp_heatmap(av2_full,
+            group_by = "Depth",
+            facet_by = "Site",
+            plot_values = TRUE,
+            tax_show = 25,
+            tax_aggregate = "Class",
+            tax_add = "Phylum",
+            plot_colorscale = "log10",
+            plot_legendbreaks = c(1, 5, 5),
+            color_vector = c("white","deepskyblue3","magenta3"))
+
+ampv_heatmap_abundances_class_full
+```
+
 
 **Core**
 
@@ -547,16 +701,20 @@ library(kableExtra)
 q0 <- hill_div(otu_table, qvalue = 0) 
 q1 <- hill_div(otu_table, qvalue = 1) 
 q2 <- hill_div(otu_table, qvalue = 2)
-
+qf <- hill_div(otu_table, qvalue = 0, tree = tree_umMPL)
 # Merge metadata with Hill numbers
-q012_all <- cbind(q0, q1, q2) %>% as.data.frame() %>% rownames_to_column(var = "SampleID")
-metadata_with_hill <- q012_all %>%                                      
+q012f_all <- cbind(q0, q1, q2, qf) %>% as.data.frame() %>% rownames_to_column(var = "SampleID")
+metadata_with_hill <- q012f_all %>%                                      
   inner_join(metadata, by = c("SampleID"="SampleID"))
 
 #save table
-write.table(metadata_with_hill, "../results/05.diversity/Metadata_with_hill.tsv", quote = FALSE, sep = "\t", row.names = TRUE, col.names=TRUE)
+write.table(metadata_with_hill, "results/05.diversity/Metadata_with_hill.tsv", quote = FALSE, sep = "\t", row.names = TRUE, col.names=TRUE)
 
 # show
+metadata_with_hill %>% head() %>% kable()
+```
+
+```{r}
 metadata_with_hill %>% head() %>% kable()
 ```
 
@@ -569,13 +727,14 @@ metadata_with_hill %>% head() %>% kable()
 ```{r}
 # Reorder q values  
 meta_qs <- metadata_with_hill %>%
-    pivot_longer(cols = q0:q2, names_to = "q", values_to = "value") %>%
-    filter(q %in% c("q0", "q1", "q2")) %>%
+    pivot_longer(cols = q0:qf, names_to = "q", values_to = "value") %>%
+    filter(q %in% c("q0", "q1", "q2", "qf")) %>%
     mutate(
         qs = case_when(
-            q == "q0" ~ "q=0",
-            q == "q1" ~ "q=1",
-            q == "q2" ~ "q=2"
+            q == "q0" ~ "q0=Observed",
+            q == "q1" ~ "q1=Exp Shannon",
+            q == "q2" ~ "q2=Inv Simpson",
+            q == "qf" ~ "q0f=PD Faith"
         ))
 
 #Get means of Hill numbers
@@ -589,69 +748,6 @@ write.table(means, "../results/05.diversity/Hill_means_sd.tsv", quote = FALSE, s
 
 print(means)
 ```
-
-
-### Plot Hill distribution
-
-
-```{r}
-library(ggpubr) 
-
-# factor to reorder plot
-metadata_with_hill$Site <- factor(metadata_with_hill$Site)
-metadata_with_hill$Depth  <- factor(metadata_with_hill$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
-
-
-#plot
-
-hill_barplot_explore <- metadata_with_hill %>%
-  pivot_longer(cols = q0:q2, names_to = "q", values_to = "value") %>%
-  filter(q %in% c("q0", "q1", "q2")) %>%
-  mutate(
-    qs = case_when(
-      q == "q0" ~ "q=0",
-      q == "q1" ~ "q=1",
-      q == "q2" ~ "q=2"
-    )) %>%
-  ggbarplot(
-    x = "Depth",
-    y = "value",
-    add = "mean_se",
-    facet.by = c("qs", "Site"),
-    fill = "Depth"
-  ) +
-  scale_fill_lancet() +
-  #geom_jitter(size = 0.8, position = position_jitter(width = 0.1)) +
-  facet_grid(rows = vars(qs), cols = vars(Site), scales = "free_y") +
-  theme(
-    strip.background =  element_blank(), #element_rect(fill = "")
-    strip.text.x = element_text(face= "bold", size = 13, margin = margin(0.5, 0, 0.5, 0)),
-    strip.text.y = element_text(face= "bold", size = 14, angle = 0, margin = margin(0, 0.5, 0, 0.5)),
-    axis.text.x = element_blank(),
-    axis.ticks.x = element_blank(),
-    axis.line = element_line(colour = "black"),
-    #panel.border = element_blank(),
-    panel.spacing.x = unit(0.5, "lines"),
-    panel.background = element_blank(),
-    axis.title.y = element_blank(),
-    axis.text.y = element_text(colour = "black", size = 11),
-    legend.position = "bottom"
-  ) +
-  labs(
-    fill = "Depth",
-    y = "",
-    x = "",
-    title = "Biodiversity across Sites and Depths"
-  ) + 
-   theme(legend.text = element_text(size = 12))
-
-hill_barplot_explore
-
-#ggsave("../results/plots/Hill_diversity_across_Sites_and_Depths_fltr.png", hill_barplot_explore_fltr, width = 11, height = 11)
-
-```
-
-
 
 ### Depth vs Hill Correlation
 
@@ -783,144 +879,353 @@ histplot_q012
 
 A pesar de que tienen una distribución normal, dado que los datos del proyecto tienen medidas repetidas y desbalanceo, lo adecuado es hacer comparaciones basadas en modelos. En este caso modelos lineales mixtos
 
+### Plot Hill distribution
 
-### Models
-
-#### Linear Mixed Models 
-
-Estos modelos son útiles cuando las observaciones tienen estructuras de dependencia, como datos longitudinales o datos agrupados/anidados. Los modelos lineales mixtos incluyen tanto efectos fijos como efectos aleatorios, donde los efectos fijos son comunes a todas las unidades/individuos, y los efectos aleatorios varían por grupo o unidad. 
-
-
-**lme**
 
 ```{r}
+library(ggpubr) 
+library(tidyverse)
+
+# factor to reorder plot
+metadata_with_hill$Location <- factor(metadata_with_hill$Location, levels = c("Dique Miguelito", "La Piedad", "El Cacahuate"))
+metadata_with_hill$Depth  <- factor(metadata_with_hill$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+
+
+#plot
+
+hill_barplot_explore <- metadata_with_hill %>%
+  pivot_longer(cols = q0:qf, names_to = "q", values_to = "value") %>%
+ filter(q %in% c("q0", "q1", "q2", "qf")) %>%
+    mutate(
+        qs = case_when(
+            q == "q0" ~ "q0=Observed",
+            q == "q1" ~ "q1=Exp Shannon",
+            q == "q2" ~ "q2=Inv Simpson",
+            q == "qf" ~ "qf0=PD Faith"
+        )) %>%
+  ggbarplot(
+    x = "Depth",
+    y = "value",
+    add = "mean_se",
+    facet.by = c("qs", "Location"),
+    fill = "Depth"
+  ) +
+  scale_fill_manual(values = depth_colors) +
+  geom_jitter(size = 0.8, position = position_jitter(width = 0.1)) +
+  facet_grid(rows = vars(qs), cols = vars(Location), scales = "free_y") +
+  theme(
+    strip.background =  element_blank(), #element_rect(fill = "")
+    strip.text.x = element_text(face= "bold", size = 13, margin = margin(0.5, 0, 0.5, 0)),
+    strip.text.y = element_text(face= "bold", size = 14, angle = 0, margin = margin(0, 0.5, 0, 0.5)),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.line = element_line(colour = "black"),
+    #panel.border = element_blank(),
+    panel.spacing.x = unit(0.5, "lines"),
+    panel.background = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.y = element_text(colour = "black", size = 11),
+    legend.position = "bottom"
+  ) +
+  labs(
+    fill = "Depth",
+    y = "",
+    x = "",
+    title = "Biodiversity across Sites and Depths"
+  ) + 
+   theme(legend.text = element_text(size = 12))
+
+hill_barplot_explore
+
+ggsave("../results/05.diversity/Hill_diversity_across_Sites_and_Depths_fltr.pdf", hill_barplot_explore, width = 11, height = 11)
+
+```
+
+### Plot Alpha by depth with lmer
+
+```{r}
+library(lme4)
 library(nlme)
-library(pgirmess)
-# lme
-
-# q0
-q0_lme <- lme(q0 ~ log(Effective_reads)+Depth_cm+Site, random=~1 |ID, data = metadata_with_hill)
-q0_lme_perm <- PermTest(q0_lme, B = 100)
-
-# q1
-q1_lme <- lme(q1 ~ Depth_cm+Site, random=~1 |ID, data = metadata_with_hill)
-q1_lme_perm <- PermTest(q1_lme, B = 100)
-
-# q2
-q2_lme <- lme(q2 ~ Depth_cm+Site, random=~1 |ID, data = metadata_with_hill)
-q2_lme_perm <- PermTest(q2_lme, B = 100)
+library(lmerTest)
+library(pgirmess) 
+library(emmeans)
+library(easystats)
+library(ggpubr)
+library(multcomp)
 ```
-
-
-**Effect**
-
-```{r}
-
-# extract p-values fun
-extract_pvalues <- function(perm_test_result) {
-  perm_test_result$resultats$p.value  
-}
-
-# extract
-lme_pvalues_q0 <- extract_pvalues(q0_lme_perm)
-lme_pvalues_q1 <- extract_pvalues(q1_lme_perm)
-lme_pvalues_q2 <- extract_pvalues(q2_lme_perm)
-
-# Dataframe  p-values
-library(dplyr)
-
-lme_pvalues_table <- data.frame(
-  Hill = c("q0", "q1", "q2"),
-  `Intercept` = c(lme_pvalues_q0[1], lme_pvalues_q1[1], lme_pvalues_q2[1]),
-  `ER` = c(lme_pvalues_q0[2], lme_pvalues_q1[2], lme_pvalues_q2[2]),
-  `Depth` = c(lme_pvalues_q0[3], lme_pvalues_q1[3], lme_pvalues_q2[3]),
-  `Site` = c(lme_pvalues_q0[4], lme_pvalues_q1[4], lme_pvalues_q2[4])
-  #`Depth:Loc` = c(lme_pvalues_q0[5], lme_pvalues_q1[5], lme_pvalues_q2[5])
-)
-
-# table
-knitr::kable(t(lme_pvalues_table), caption = "P-values from Permuted LME")
-
-# save 
-write.csv(t(lme_pvalues_table), "../results/05.diversity/P-values_from_Permuted_LME.csv", row.names = FALSE)
-```
-
 
 
 
 ```{r}
-q0_lme_perm
+# Reorganizar los niveles de Location
+metadata_with_hill$Location <- relevel(metadata_with_hill$Location, ref = "El Cacahuate")
+
+# Ajustar el modelo lineal mixto
+q0lmer <- lmer(q0 ~ Depth_cm + Location + Site + (1 | ID), data = metadata_with_hill)
+summary(q0lmer)
+
+# Realizar la prueba de permutación con lmerTest
+perm_test <- rand(q0lmer, nsim = 1000)
+
+# Resumen de los resultados de la prueba de permutación
+perm_test
+
+#efectos
+anova(q0lmer)
 ```
-
-
-**Check with easystats**
-
-**q=0**
 
 ```{r}
 library(easystats)
-
-check_q0_lme_1 <- check_heteroscedasticity(q0_lme)
-print(check_q0_lme_1)
-check_homogeneity(q0_lme)
+check_model(q0lmer)
 ```
-
-**q=1**
 
 ```{r}
-check_q1_lme_1 <- check_model(q1_lme)
-print(check_q1_lme_1)
+library(easystats)
+report(q0lmer)
 ```
 
 
-**q=2**
 
 ```{r}
-check_q2_lme_1 <- check_model(q2_lme)
+# Obtener las diferencias significativas usando emmeans
+q0_lmer_means <- emmeans(q0lmer, pairwise ~ Depth_cm)
 
-check_q2_lme_1
+# Obtener las letras de significancia
+cld_results <- cld(object = q0_lmer_means$emmeans, Letters = letters)
+
+# Convertir a data frame
+emmeans_df <- as.data.frame(cld_results)
 ```
 
-#### Generalized Linear Mixed Model
-
-**glm quasipoisson**
-
-```{r eval=FALSE, include=FALSE}
-#q0 glm quasipoissonlog
-q0_glm_quasipoisson <- glm(q0 ~ log(Effective_reads)+Depth_cm*Site+(1|ID),
-              family = quasipoisson(link = "log"),
-              data = metadata_with_hill)
-
-#q1 glm quasipoisson
-q1_glm_quasipoisson <- glm(q1 ~ log(Effective_reads)+Depth_cm*Site+(1|ID),
-              family = quasipoisson(link = "log"),
-              data = metadata_with_hill)
-
-#q2 glm quasipoisson
-q2_glm_quasipoisson <- glm(q1 ~ log(Effective_reads)+Depth_cm*Site+(1|ID),
-              family = quasipoisson(link = "log"),
-              data = metadata_with_hill)
+```{r}
+# Crear el gráfico de barras con letras de significancia
+q0plot <- ggplot(metadata_with_hill, aes(x = Depth_cm, y = q0)) +
+  geom_bar(data = emmeans_df, aes(y = emmean, fill = Depth_cm), stat = "identity", position = position_dodge(), color = "black", width = 0.7) +
+  geom_errorbar(data = emmeans_df, aes(y = emmean, ymin = lower.CL, ymax = upper.CL), width = 0.2, position = position_dodge(0.9)) +
+  geom_jitter(aes(fill = Depth_cm), width = 0.1, alpha = 0.4) +
+  geom_text(data = emmeans_df, aes(y = emmean, label = .group), vjust = -9, color = "black", fontface = "bold", position = position_dodge(0.9)) +
+  labs(title = "Richness", y = NULL, x = NULL ) + #,
+       #caption = "letters by lmer emmeans") +
+    theme_bw() + scale_fill_manual(values = depth_colors) +
+    theme(legend.position = "none")
+q0plot
 ```
 
-```{r eval=FALSE, include=FALSE}
-summary(q0_glm_quasipoisson)
+**q1**
+ 
+```{r}
+
+# Reorder Location
+metadata_with_hill$Location <- relevel(metadata_with_hill$Location, ref = "El Cacahuate")
+
+# Fitted linear mixed model
+q1lmer <- lmer(q1 ~ Depth_cm + Location + Site + (1 | ID), data = metadata_with_hill)
+summary(q1lmer)
+
+# lmerTest
+perm_testq1 <- rand(q1lmer, nsim = 1000)
+
+# Summary
+perm_testq1
+
+# Efects
+anova(q1lmer)
+
+# Check model
+library(easystats)
+
+check_model(q1lmer)
+report(q1lmer)
+
+# Sig dif emmeans
+q1_lmer_means <- emmeans(q1lmer, pairwise ~ Depth_cm)
+
+# letters
+cld_resultsq1 <- cld(object = q1_lmer_means$emmeans, Letters = letters)
+
+# Convert df
+emmeans_dfq1 <- as.data.frame(cld_resultsq1)
+
+# plot
+q1plot <- ggplot(metadata_with_hill, aes(x = Depth_cm, y = q1)) +
+  geom_bar(data = emmeans_dfq1, aes(y = emmean, fill = Depth_cm), stat = "identity", position = position_dodge(), color = "black", width = 0.7) +
+  geom_errorbar(data = emmeans_dfq1, aes(y = emmean, ymin = lower.CL, ymax = upper.CL), width = 0.2, position = position_dodge(0.9)) +
+  geom_jitter(aes(fill = Depth_cm), width = 0.1, alpha = 0.4) +
+  geom_text(data = emmeans_dfq1, aes(y = emmean, label = .group), vjust = -9, color = "black", fontface = "bold",position = position_dodge(0.9)) +
+  labs(title = "Exp Shannon", y = NULL, x = NULL ) + #,
+       #caption = "letters by lmer emmeans") +
+    theme_bw() + scale_fill_manual(values = depth_colors) +
+    theme(legend.position = "none")
+q1plot
 ```
-```{r eval=FALSE, include=FALSE}
-summary(q1_glm_quasipoisson)
+
+
+**q2**
+ 
+```{r}
+
+# Reorder Location
+metadata_with_hill$Location <- relevel(metadata_with_hill$Location, ref = "El Cacahuate")
+
+# Fitted linear mixed model
+q2lmer <- lmer(q2 ~ Depth_cm + Location + Site + (1 | ID), data = metadata_with_hill)
+summary(q2lmer)
+
+# lmerTest
+perm_testq2 <- rand(q2lmer, nsim = 1000)
+
+# Summary
+perm_testq2
+
+# Efects
+anova(q2lmer)
+
+# Check model
+library(easystats)
+
+check_model(q2lmer)
+report(q2lmer)
+
+# Sig dif emmeans
+q2_lmer_means <- emmeans(q2lmer, pairwise ~ Depth_cm)
+
+# letters
+cld_resultsq2 <- cld(object = q2_lmer_means$emmeans, Letters = letters)
+
+# Convert df
+emmeans_dfq2 <- as.data.frame(cld_resultsq2)
+
+# plot
+q2plot <- ggplot(metadata_with_hill, aes(x = Depth_cm, y = q2)) +
+  geom_bar(data = emmeans_dfq2, aes(y = emmean, fill = Depth_cm), stat = "identity", position = position_dodge(), color = "black", width = 0.7) +
+  geom_errorbar(data = emmeans_dfq2, aes(y = emmean, ymin = lower.CL, ymax = upper.CL), width = 0.2, position = position_dodge(0.9)) +
+  geom_jitter(aes(fill = Depth_cm), width = 0.1, alpha = 0.4) +
+  geom_text(data = emmeans_dfq2, aes(y = emmean, label = .group), vjust = -9, color = "black", fontface = "bold",position = position_dodge(0.9)) +
+  labs(title = "Inv Simpson", y = NULL, x = NULL ) + #,
+       #caption = "letters by lmer emmeans") +
+    theme_bw() + scale_fill_manual(values = depth_colors) +
+    theme(legend.position = "none")
+q2plot
 ```
 
 
-```{r eval=FALSE, include=FALSE}
-summary(q2_glm_quasipoisson)
+**qf**
+ 
+```{r}
+
+# Reorder Location
+metadata_with_hill$Location <- relevel(metadata_with_hill$Location, ref = "El Cacahuate")
+
+# Fitted linear mixed model
+qflmer <- lmer(qf ~ Depth_cm + Location + Site + (1 | ID), data = metadata_with_hill)
+summary(qflmer)
+
+# lmerTest
+perm_testqf <- rand(qflmer, nsim = 1000)
+
+# Summary
+perm_testqf
+
+# Efects
+anova(qflmer)
+
+# Check model
+library(easystats)
+
+check_model(qflmer)
+report(qflmer)
+
+# Sig dif emmeans
+qf_lmer_means <- emmeans(qflmer, pairwise ~ Depth_cm)
+
+# letters
+cld_resultsqf <- cld(object = qf_lmer_means$emmeans, Letters = letters)
+
+# Convert df
+emmeans_dfqf <- as.data.frame(cld_resultsqf)
+
+# plot
+qfplot <- ggplot(metadata_with_hill, aes(x = Depth_cm, y = qf)) +
+  geom_bar(data = emmeans_dfqf, aes(y = emmean, fill = Depth_cm), stat = "identity", position = position_dodge(), color = "black", width = 0.7) +
+  geom_errorbar(data = emmeans_dfqf, aes(y = emmean, ymin = lower.CL, ymax = upper.CL), width = 0.2, position = position_dodge(0.9)) +
+  geom_jitter(aes(fill = Depth_cm), width = 0.1, alpha = 0.4) +
+  geom_text(data = emmeans_dfqf, aes(y = emmean, label = .group), vjust = -8, color = "black", fontface = "bold", position = position_dodge(0.9)) +
+  labs(title = "PD Faith", y = NULL, x = NULL ) + #,
+       #caption = "letters by lmer emmeans") +
+    theme_bw() + scale_fill_manual(values = depth_colors) +
+    theme(legend.position = "none")
+qfplot
 ```
-```{r eval=FALSE, include=FALSE}
-check_q1_glm_qp_1 <- check_model(q1_glm_quasipoisson)
 
-check_q1_glm_qp_1
+```{r}
+library(ggplot2)
+library(cowplot)
+
+#Combine plot
+#title_alpha_plot <- ggdraw() + draw_label("Alpha Diversity by Depth" , fontface = "bold")
+ytitle <- ggdraw() + draw_label("Effective number of ASVs", angle = 90, size = 14 )
+q01plot <- plot_grid(q0plot, q1plot, labels = c("A", "B"), ncol = 2)
+q2fplot <- plot_grid(q2plot, qfplot, labels = c("C", "D"), ncol = 2)
+alphaplots <- plot_grid(q01plot, q2fplot, ncol = 1, rel_heights = c(1, 1))
+alphaplots_y <- plot_grid(ytitle, alphaplots, ncol = 2, rel_widths = c(0.05, 1))    
+alphaplots_y
+#save plot
+#ggsave("../results/plots/alpha_depth_correlation_samples.png", correlation_plot_q012_, width = 8, height = 8)
 ```
 
 
+### Alpha by Location with lmer
 
+**q0**
+
+
+```{r}
+# Obtener las diferencias significativas usando emmeans
+q0_lmer_means_loc <- emmeans(q0lmer, pairwise ~ Location)
+
+# Obtener las letras de significancia
+q0cld_results_loc <- cld(object = q0_lmer_means_loc$emmeans, Letters = letters)
+
+# Convertir a data frame
+q0emmeans_df_loc <- as.data.frame(q0cld_results_loc)
+q0emmeans_df_loc
+```
+
+
+```{r}
+# Obtener las diferencias significativas usando emmeans
+q1lmer_means_loc <- emmeans(q1lmer, pairwise ~ Location)
+
+# Obtener las letras de significancia
+q1cld_results_loc <- cld(object = q1lmer_means_loc$emmeans, Letters = letters)
+
+# Convertir a data frame
+q1emmeans_df_loc <- as.data.frame(q1cld_results_loc)
+q1emmeans_df_loc
+```
+
+```{r}
+# Obtener las diferencias significativas usando emmeans
+q2lmer_means_loc <- emmeans(q2lmer, pairwise ~ Location)
+
+# Obtener las letras de significancia
+q2cld_results_loc <- cld(object = q2lmer_means_loc$emmeans, Letters = letters)
+
+# Convertir a data frame
+q2emmeans_df_loc <- as.data.frame(q2cld_results_loc)
+q2emmeans_df_loc
+```
+```{r}
+# Obtener las diferencias significativas usando emmeans
+qflmer_means_loc <- emmeans(qflmer, pairwise ~ Location)
+
+# Obtener las letras de significancia
+qfcld_results_loc <- cld(object = qflmer_means_loc$emmeans, Letters = letters)
+
+# Convertir a data frame
+qfemmeans_df_loc <- as.data.frame(qfcld_results_loc)
+qfemmeans_df_loc
+```
 
 # Beta diversity Diversity  
 
@@ -952,6 +1257,7 @@ library(tidyr)
 
 # Reorder
 meta$Depth <- factor(meta$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+meta$Location <- factor(meta$Location, levels = c("El Cacahuate", "Dique Miguelito", "La Piedad"))
 
 # plot
 pca_plot <- ggplot(data = data.frame(pca$x) %>%
@@ -963,19 +1269,19 @@ pca_plot <- ggplot(data = data.frame(pca$x) %>%
                 top_n(8, a) %>%
                 mutate(PC1 = PC1*50, PC2 = PC2*50),
                 aes(x = 0, xend = PC1, y = 0, yend = PC2)) +
-  geom_point(aes(x = PC1, y = PC2, color = Depth, shape = Site), size = 3) +
+  geom_point(aes(x = PC1, y = PC2, color = Depth, shape = Location), size = 3) +
   geom_vline(xintercept = 0, linetype = 2) +
   geom_hline(yintercept = 0, linetype = 2) +
-  scale_color_lancet() + 
-  scale_shape_manual(values = c(15, 16, 17, 18, 23, 24, 25)) +
-  scale_fill_lancet() +
+  scale_color_manual(values = depth_colors) + 
+  scale_shape_manual(values = c(15, 16, 17)) +
+  scale_fill_manual(values = depth_colors) +
   theme(axis.text = element_text(colour = "black", size = 12),
         axis.title = element_text(colour = "black", size = 12),
         legend.text = element_text(size = 10),
         legend.title = element_text(size = 12), 
         legend.position = "right", 
         legend.box = "vertical") +
-  labs(y = "PC2", x = "PC1", color = "Depth", shape = "Site") +
+  labs(y = "PC2", x = "PC1", color = "Depth", shape = "Location") +
    theme_bw()
 
 pca_plot
@@ -1000,8 +1306,8 @@ nmds_plot_bray<- ggplot() +
                  left_join(metadata, by = "SampleID"),
                aes(x=NMDS1, y=NMDS2,  color = Depth, shape = Site), size=5) +
     theme_linedraw()+
-    scale_fill_lancet()+ 
-    scale_color_lancet()+
+    scale_fill_manual(values = depth_colors)+ 
+    scale_color_manual(values = depth_colors)+
     scale_shape_manual(values = c(15, 16, 17, 18, 23, 24, 25)) +
     theme(axis.text = element_text(colour = "black", size = 12),
           axis.title = element_text(colour = "black", size = 12),
@@ -1039,7 +1345,7 @@ nmds_plot_aitch<- ggplot() +
                  left_join(metadata, by = "SampleID"),
                aes(x=NMDS1, y=NMDS2,  color = Depth, shape = Site), size=5) +
   #  theme_linedraw()+
-    scale_fill_lancet()+ 
+    scale_fill_manual(values = depth_colors)+ 
     scale_color_lancet()+ 
     scale_shape_manual(values = c(15, 16, 17, 18, 23, 24, 25)) +
     theme(axis.text = element_text(colour = "black", size = 12),
@@ -1072,8 +1378,8 @@ pcoa_plot<- ggplot() +
     geom_vline(xintercept = 0, linetype = 2) +   #lines-cross
     geom_hline(yintercept = 0, linetype = 2) +
     theme_linedraw()+
-    scale_fill_lancet()+ 
-    scale_color_lancet()+ 
+    scale_fill_manual(values = depth_colors)+ 
+    scale_color_manual(values = depth_colors)+ 
     scale_shape_manual(values = c(15, 16, 17, 18, 23, 24, 25)) +
     theme(axis.text = element_text(colour = "black", size = 12),
           axis.title = element_text(colour = "black", size = 12),
@@ -1095,19 +1401,269 @@ nmds_bray_aitch
 ```
 
 
-
-### Permanova
-
-
 ```{r}
 meta_just = data.frame(t(otu_table_pseudo), check.names = F) %>% rownames_to_column(var = "SampleID") %>% inner_join(metadata_with_hill)
 
-permanovas = adonis2(t(otu_table_pseudo) ~ log(Effective_reads)+Depth_cm*Site,
+permanovas = adonis2(t(otu_table_pseudo) ~ log(Effective_reads)+Location+Site+Depth_cm+Depth_cm*Location+ Depth_cm*Site,
                      data=meta_just, method = "aitchison", 
                      permutations = 999, strata = meta_just$ID)
 permanovas
 ```
 
+
+### Weighted Unifrac
+```{r}
+#phylogenetic
+library(ggplot2)
+library(ggsci)
+library(phyloseq)
+library(vegan)
+library(ggrepel)
+
+# NMDS wu
+nmds_wunifrac <- ordinate(ps, method = "NMDS", distance = "wunifrac")
+
+# stress variable
+var_stress_nmds_wu <- round(nmds_wunifrac$stress, 5)
+var_stress_nmds_wu
+
+# Calcular los vectores de ASVs usando envfit
+ asv_matrix <- as(otu_table(ps), "matrix")
+ asv_matrix <- t(asv_matrix) # 
+ #envfit_resultwu <- envfit(nmds_wunifrac, asv_matrix, permutations = 999)
+
+# Extraer los 10 ASVs más significativos
+top_asvswu <- scores(envfit_resultwu, display = "vectors")
+top_asvswu <- top_asvswu[order(envfit_resultwu$vectors$r), ][1:12, ]
+top_asvswu
+
+# Escalar los vectores para hacerlos más visibles
+scale_factor <- 1.5
+top_asvs_scaledwu <- top_asvswu * scale_factor
+top_asvs_scaledwu <- as.data.frame(top_asvs_scaledwu)
+top_asvs_scaledwu$ASV <- rownames(top_asvs_scaledwu)
+
+# Obtener la taxonomía de los ASVs
+tax_table <- as.data.frame(tax_table(ps))
+tax_table$ASV <- rownames(tax_table$Family)
+
+# Verificar la estructura en tax_table
+tax_table_subsetwu <- tax_table(ps)[rownames(top_asvswu), ]
+tax_table_subsetwu <- as.data.frame(tax_table_subsetwu)
+print(tax_table_subsetwu)
+
+# Extraer los nombres de los taxones de nivel más bajo para los top 10 ASVs
+top_asvs_scaledwu$Taxon <- (tax_table_subsetwu$Family)
+
+# Verificar los nombres de taxones en top_asvs_scaled
+print(top_asvs_scaledwu)
+
+
+
+# Convertir Depth_cm en un factor con niveles definidos
+sample_data(ps)$Depth_cm <- factor(sample_data(ps)$Depth_cm, levels = c("0-15", "16-30", "31-45", "50-75"))
+# Definir los colores para cada nivel de Depth_cm
+depth_colors <- setNames(c("#f5e5c4", "#baa179", "#a67451", "#80673b"), levels(sample_data(ps)$Depth_cm))
+print(depth_colors)
+
+
+nmds_wu <- plot_ordination(ps, nmds_wunifrac, color = "Depth_cm") + theme_bw() + 
+  labs(col = "Depth") + 
+  labs(title="Weighted UniFrac") +
+  geom_point(size=5) + theme_bw() +
+    scale_fill_manual(values = depth_colors)+ 
+    scale_color_manual(values = depth_colors)#+
+    #scale_shape_manual(values = c(15, 16, 17))
+
+nmds_wu <- nmds_wu +
+  annotate("text", x = Inf, y = -Inf, label = paste("Stress:", var_stress_nmds_wu),
+           hjust = 1.1, vjust = -1.1, size = 4)
+
+
+# Añadir vectores al gráfico con nombres de taxones
+nmds_wu <- nmds_wu +
+  geom_segment(data = top_asvs_scaledwu, aes(x = 0, y = 0, xend = NMDS1, yend = NMDS2),
+               arrow = arrow(length = unit(0.1, "cm")), color = "grey50") +
+  geom_text_repel(data = top_asvs_scaledwu, aes(x = NMDS1, y = NMDS2, label = Taxon),
+                  color = "grey40", size = 3.5)
+
+# Mostrar el gráfico
+print(nmds_wu)
+
+#permanova unifrac
+library(phyloseq)
+library(vegan)
+
+# UniFrac
+wunifrac_distances <- UniFrac(ps, weighted = TRUE)
+
+# Convertir las distancias a un objeto de clase 'dist'
+wunifrac_distances <- as.dist(wunifrac_distances)
+
+# Realizar PERMANOVA usando adonis2 con la fórmula proporcionada
+adonis2_wunifrac <- adonis2(wunifrac_distances ~ Location + Site + Depth_cm,
+                          data = metadata, method = "euclidean",
+                          permutations = 999, strata = metadata$ID)
+
+print(adonis2_wunifrac)
+
+# load libraries
+library(ggplot2)
+library(cowplot)
+library(ggpubr)
+library(gridExtra)
+
+# Extract adonis2_unifrac
+adonis_results_wu <- as.data.frame(adonis2_wunifrac)
+
+# perMANOVA df results
+permanova_results_wu <- data.frame(
+  Factor = rownames(adonis_results_wu)[1:4],
+  Df = adonis_results_wu$Df[1:4],
+  SumOfSqs = round(adonis_results_wu$SumOfSqs[1:4], 4),
+  R2 = round(adonis_results_wu$R2[1:4], 4),
+  F = round(adonis_results_wu$F[1:4], 4),
+  p_value = round(adonis_results_wu$`Pr(>F)`[1:4], 4)
+)
+
+# ggpubr::ggtexttable
+permanova_table_wu <- ggtexttable(permanova_results_wu, rows = NULL, theme = ttheme("light"))
+
+  
+# Combine plots
+combined_plot_wu <- plot_grid(nmds_wu,permanova_table_wu, ncol = 1, rel_heights = c(5,1))
+
+# Mostrar el gráfico final
+print(combined_plot_wu)
+```
+
+```{r}
+ggsave("../results/plots/nmds_wunifrac_permanova.pdf", plot = combined_plot_wu,  width = 10.5, height = 9, bg='transparent')
+```
+
+
+### Unweighted UniFrac
+
+```{r}
+## Unweighted UniFrac
+nmds_unifrac <- ordinate(ps, method = "NMDS", distance = "unifrac")
+# stress variable
+var_stress_nmds_u <- round(nmds_unifrac$stress, 5)
+var_stress_nmds_u
+
+# # Calcular los vectores de ASVs usando envfit
+# asv_matrix <- as(otu_table(ps), "matrix")
+# asv_matrix <- t(asv_matrix) # Transponer para que las ASVs sean columnas
+# envfit_result <- envfit(nmds_unifrac, asv_matrix, permutations = 999)
+
+# Extraer los 10 ASVs más significativos
+top_asvs <- scores(envfit_result, display = "vectors")
+top_asvs <- top_asvs[order(envfit_result$vectors$r), ][1:10, ]
+top_asvs
+
+# Escalar los vectores para hacerlos más visibles
+scale_factor <- 4
+top_asvs_scaled <- top_asvs * scale_factor
+top_asvs_scaled <- as.data.frame(top_asvs_scaled)
+top_asvs_scaled$ASV <- rownames(top_asvs_scaled)
+
+# Obtener la taxonomía de los ASVs
+tax_table <- as.data.frame(tax_table(ps))
+tax_table$ASV <- rownames(tax_table$Family)
+
+# Verificar la estructura en tax_table
+tax_table_subset <- tax_table(ps)[rownames(top_asvs), ]
+tax_table_subset <- as.data.frame(tax_table_subset)
+print(tax_table_subset)
+
+# Extraer los nombres de los taxones de nivel más bajo para los top 10 ASVs
+top_asvs_scaled$Taxon <- (tax_table_subset$Family)
+
+# Verificar los nombres de taxones en top_asvs_scaled
+print(top_asvs_scaled)
+
+# Reordenar los niveles de 'Location' para que 'Dique Miguelito' sea el último
+sample_data(ps)$Location <- factor(sample_data(ps)$Location, levels = c("El Cacahuate", "La Piedad", "Dique Miguelito"))
+
+# Crear el gráfico de NMDS
+nmds_u <- plot_ordination(ps, nmds_unifrac, color = "Location", shape = "Depth_cm") + 
+  theme_bw() + 
+  labs(col = "Location", title = "Unweighted UniFrac") +
+  geom_point(size = 6) +
+  scale_fill_manual(values = loc_colors) + 
+  scale_color_manual(values = loc_colors) + 
+  scale_shape_manual(values = c(15, 16, 17, 18)) +
+  annotate("text", x = Inf, y = -Inf, label = paste("Stress:", var_stress_nmds_u),
+           hjust = 1.1, vjust = -1.1, size = 4)
+
+# Añadir vectores al gráfico con nombres de taxones
+nmds_u <- nmds_u +
+  geom_segment(data = top_asvs_scaled, aes(x = 0, y = 0, xend = NMDS1, yend = NMDS2),
+               arrow = arrow(length = unit(0.1, "cm")), color = "grey50") +
+  geom_text_repel(data = top_asvs_scaled, aes(x = NMDS1, y = NMDS2, label = Taxon),
+                  color = "grey40", size = 4)
+
+# Mostrar el gráfico
+print(nmds_u)
+
+#permanova unifrac
+library(phyloseq)
+library(vegan)
+
+# UniFrac
+unifrac_distances <- UniFrac(ps, weighted = FALSE)
+
+# Convertir las distancias a un objeto de clase 'dist'
+unifrac_distances <- as.dist(unifrac_distances)
+
+# Realizar PERMANOVA usando adonis2 con la fórmula proporcionada
+adonis2_unifrac <- adonis2(unifrac_distances ~ Location + Site + Depth_cm,
+                          data = metadata, method = "euclidean",
+                          permutations = 999, strata = metadata$ID)
+
+print(adonis2_unifrac)
+
+# load libraries
+library(ggplot2)
+library(cowplot)
+library(ggpubr)
+library(gridExtra)
+
+# Extract adonis2_unifrac
+adonis_results_u <- as.data.frame(adonis2_unifrac)
+
+# perMANOVA df results
+permanova_results_u <- data.frame(
+  Factor = rownames(adonis_results_u)[1:4],
+  Df = adonis_results_u$Df[1:4],
+  SumOfSqs = round(adonis_results_u$SumOfSqs[1:4], 4),
+  R2 = round(adonis_results_u$R2[1:4], 4),
+  F = round(adonis_results_u$F[1:4], 4),
+  p_value = round(adonis_results_u$`Pr(>F)`[1:4], 4)
+)
+
+# ggpubr::ggtexttable
+permanova_table_u <- ggtexttable(permanova_results_u, rows = NULL, theme = ttheme("light"))
+
+  
+# Combine plots
+combined_plot_u <- plot_grid(nmds_u,permanova_table_u, ncol = 1, rel_heights = c(5,1))
+
+# Mostrar el gráfico final
+print(combined_plot_u)
+```
+
+```{r}
+ggsave("../results/plots/nmds_unifrac_permanova.pdf", plot = combined_plot_u,  width = 8.5, height = 8, bg='transparent')
+```
+
+
+```{r}
+# Combine plots
+nmdss_uu_wu <- plot_grid(combined_plot_u,combined_plot_wu, ncol = 2, labels = c("A", "B"))
+
+nmdss_uu_wu
+```
 
 
 ## Core
@@ -1150,7 +1706,7 @@ nmds_plot_aitch_fc<- ggplot() +
                  rownames_to_column(var = "Sample")%>%
                  left_join(meta_full_core, by = "Sample"),
                aes(x=NMDS1, y=NMDS2,  color = Depth, shape = Site), size=4) +
-    scale_fill_lancet()+
+    scale_fill_manual(values = depth_colors)+
     scale_color_lancet()+
     scale_shape_manual(values = c(15, 16, 17, 18, 23, 24, 25)) +
     theme(axis.text = element_text(colour = "black", size = 12),
@@ -1214,34 +1770,34 @@ table(meta(ps)$Depth_cm, useNA = "always")
 
 ## Full Core Depth
 
-
 ```{r}
 #List of Depths
-Depths <- unique(as.character(meta(ps_full_rel_f)$Depth_cm))
-print(Depths)
+depths <- unique(as.character(meta(ps_full_rel_f2)$Depths))
+print(depths)
 ```
 
 
 ```{r}
+
 #Write a for loop to go through each of the Depths one by one and combine identified core taxa into a list.
 
 list_core_full <- list()# an empty object to store information
 
-for (Depth_cm in Depths){ 
+for (depth in depths){ 
     #print(paste0("Identifying Core Taxa for ", Depth))
     
-    ps_sub_full <- subset_samples(ps_full_rel_f, Depth_cm == Depth_cm ) 
+    ps_sub_full <- subset_samples(ps_full_rel_f2, Depths == depth) 
     
     core_m_full <- core_members(ps_sub_full,
                            detection = 0, # 100 % samples 
                            prevalence = 0.5) # 50% prevalence
-    print(paste0("No. of core taxa in ", Depth_cm, " : ", length(core_m_full)))
+    print(paste0("No. of core taxa in ", depth, " : ", length(core_m_full)))
    
      # add to a list core taxa for each group.
-    list_core_full[[Depth_cm]] <- core_m_full
+    list_core_full[[depth]] <- core_m_full
     
     #create core depth variable
-    variable_name_full <- paste0("core_full_", gsub(" ", "_", Depth_cm))
+    variable_name_full <- paste0("core_full_", gsub(" ", "_", depth))
     assign(variable_name_full, core_m_full, envir = .GlobalEnv)
     
     #write all cores
@@ -1258,21 +1814,21 @@ for (Depth_cm in Depths){
 library(VennDiagram)
 
 # Extract lancet Depth colors
-depth_colors <- scale_fill_lancet()$palette(4)
+depth_colors <- scale_fill_manual(values = depth_colors)$palette(4)
 
 # plot
 venn_plot_full <- venn.diagram(
   x = list_core_full,
-  filename = NULL,
-  #filename = "../results/05.diversity/Venn_full.png",
+  #filename = NULL,
+  filename = "../results/plots/Venn_depth.png",
   category.names = c("0-15", "16-30", "31-45", "50-75"),
   output = TRUE,
-  #imagetype = "png",
+  imagetype = "png",
   height = 2000,
   width = 2000,
   resolution = 300,
   compression = "lzw",
-  #units = "px",
+  units = "px",
   lwd = 2,
   lty = 'blank',
   fontfamily ="sans",
@@ -1280,22 +1836,29 @@ venn_plot_full <- venn.diagram(
   cat.fontfamily = "sans",
   cat.cex = 1.85,
   cat.default.pos = "outer")
-
-# Show
-grid.draw(venn_plot_full)
 ```
+
 
 ```{r}
 library(UpSetR)
-
+library(ggplotify)
 
 # Convert UpSetR  fromList
 full_core_data <- fromList(list_core_full)
 
 # UpSet plot
-upset_full_depth <- upset(full_core_data, nsets = 4, decreasing = T, order.by = "freq", keep.order = TRUE, main.bar.color = "black", sets.bar.color = depth_colors)
+upset_full_depth <- as.ggplot(upset(full_core_data, decreasing = T, order.by = "freq", keep.order = TRUE, main.bar.color = "black", sets.bar.color = c("#80673b","#a67451","#baa179","#f5e5c4"), query.legend = "top", point.size = 4, line.size = 1, mainbar.y.label = "Shared ASV's",sets.x.label = "ASV's per Depth",text.scale = c(1.6, 1.3, 1.6, 1.3, 1.3, 1.3),queries = list(
+                    list(query = intersects, params = list("0-15"), color = "#f5e5c4", active = T, query.name="0-15"),
+                    list(query = intersects, params = list("16-30"), color = "#baa179", active = T, query.name="16-30"),
+                    list(query = intersects, params = list("31-45"), color = "#a67451", active = T, query.name="31-45"),
+                    list(query = intersects, params = list("50-75"), color = "#80673b", active = T, query.name="50-75"),
+                    list(query = intersects, params = list("0-15", "16-30", "31-45", "50-75"), color = "#FFD700FF", active = T,query.name="Core"))))
 
 upset_full_depth
+
+# pdf("../results/plots/upsdepth.pdf")
+# upset_full_depth
+# dev.off()
 ```
 
 
@@ -1406,15 +1969,82 @@ for (site in sites){
 
 ```{r}
 library(UpSetR)
+library(ggplotify)
 
-sites_colors <- scale_fill_d3()$palette(7)
+sites_colors <- paletteer_d("ggprism::warm_pastels", 7)
 # Convert UpSetR  fromList
 input_data <- fromList(list_core_sites_full)
 
 # UpSet plot
-upset_full_sites <- upset(input_data, nsets = 7, decreasing = T, order.by = "freq", keep.order = TRUE, main.bar.color = "black", sets.bar.color = sites_colors)
-
+upset_full_sites <- as.ggplot(upset(input_data, nsets = 7, nintersects = 41,decreasing = T, 
+                    order.by = "freq",sets.bar.color = sites_colors,query.legend = "top",
+                    point.size = 4, line.size = 1, text.scale = c(1.6, 1.3, 1.6, 1.3, 1.3, 1.1), 
+                    mainbar.y.label = "Shared ASV's",sets.x.label = "ASV's per Site",
+                    queries = list(
+                    list(query = intersects, params = list("Site_1", "Site_2", "Site_3"), color = "#2E8B57", active = T, query.name="Dique Miguelito"),
+                    list(query = intersects, params = list("Site_4", "Site_5"), color = "#44C17B", active = T,query.name="La Piedad"),
+                    list(query = intersects, params = list("Site_6", "Site_7"), color = "#A3D9A8", active = T, query.name="El Cacahuate"),
+                    list(query = intersects, params = list("Site_1", "Site_2", "Site_3","Site_4", "Site_5",
+                                                "Site_6", "Site_7"), color = "#FF3D7FFF", active = T,query.name="Core"),
+                    list(query = elements, params = list("Site_2"), color = sites_colors[1], active = F,query.name="Site_2"),
+                    list(query = elements, params = list("Site_4"), color = sites_colors[2], active = F,query.name="Site_4"),
+                    list(query = elements, params = list("Site_5"), color = sites_colors[3], active = F,query.name="Site_5"),
+                    list(query = elements, params = list("Site_7"), color = sites_colors[4], active = F, query.name="Site_7"),
+                    list(query = elements, params = list("Site_1"), color = sites_colors[5], active = F,query.name="Site_1"),
+                    list(query = elements, params = list("Site_3"), color = sites_colors[6], active = F,query.name="Site_3"),
+                    list(query = elements, params = list("Site_6"), color = sites_colors[7], active = F,query.name="Site_6"))))
 upset_full_sites
+# pdf(file="../results/plots/upsloc.pdf")
+# upset_full_sites
+# dev.off()
 ```
 
+```{r}
+library(png)
+# Load the UpSet plot
+upset_loc_load <- ggplot2::ggplot(data = data.frame(x = 1, y = 1)) + 
+  annotation_custom(grid::rasterGrob(readPNG("../results/plots/upsloc.png")), xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf)
+
+```
+
+Combine upset nmds plots
+
+```{r}
+nmdss_uu_wu_sinperm <- plot_grid(nmds_u,nmds_wu, ncol = 2, labels = c("A", "B"))
+```
+
+
+```{r}
+# Combine plots
+upsets_plots <- plot_grid(upset_full_sites,upset_full_depth, ncol = 2, labels = c("C", "D"))
+
+upsets_plots
+```
+
+```{r}
+# Combine plots
+nmdss_upsets <- plot_grid(nmdss_uu_wu_sinperm,upsets_plots, ncol = 1, rel_heights = c(2.3,1.7))
+
+nmdss_upsets
+```
+
+```{r}
+ggsave("../results/plots/nmds_upsets_comb_fmt.pdf", plot = nmdss_upsets, width = 12, height = 10)
+```
+
+
+```{r}
+# Combine plots
+nmdss_upsets <- plot_grid(nmdss_uu_wu,upsets_plots, ncol = 1, rel_heights = c(1,0.8)  )
+
+nmdss_upsets
+
+```
+
+
+
+```{r}
+# save project variables  
+save.image("Diversity.RData")
+```
 
