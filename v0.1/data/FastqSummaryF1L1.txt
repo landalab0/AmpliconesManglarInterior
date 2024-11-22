@@ -1,1 +1,0 @@
-/axolote/mvazquez/DATOS_MVMM_MirnaVRL/Data/Intensities/BaseCalls/FastqSummaryF1L1.txt

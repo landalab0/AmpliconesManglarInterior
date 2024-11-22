@@ -1,0 +1,550 @@
+---
+title: "Explore_sediments_mangroove_diversity"
+author: "DianaOaxaca"
+date: "`r Sys.Date()`"
+output:
+  html_document:                   
+    collapsed: true               
+    code_folding: show             
+    toc: true                     
+    toc_depth: 4                   
+    toc_float: true                 
+    smooth_scroll: true            
+    highlight: tango               
+    df_print: paged                
+    number_sections: true          
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Diversity
+
+## Explore data
+
+
+```{r eval=FALSE, include=FALSE}
+#load packages
+load("Postprocess.RData")
+```
+
+
+```{r include=FALSE}
+#Define package vectors
+cran_packages <- c("knitr", "qtl", "bookdown", "magrittr", "plyr", "ggplot2",
+                   "grid","gridExtra", "tidyverse", "devtools", "dplyr",
+                   "pheatmap", "xtable",
+                   "kableExtra", "remotes", "Rtsne", "vegan", "RColorBrewer",
+                   "PoiClaClu", "ggsci",
+                   "gtools", "gplots", "reshape2", "MASS", "usethis",
+                   "indicspecies", "Polychrome")
+
+bioc_packages <- c("airway", "phyloseq", "dada2", "DECIPHER", "phangorn",
+                   "ggpubr","DESeq2",
+                   "genefilter", "philr", "GenomeInfoDb", "microbiome",
+                   "metagenomeSeq", "mia", "curatedMetagenomicData",
+                   "ANCOMBC","microbiomeMarker")
+
+git_packages <- c("btools", "fantaxtic", "ampvis2", "tsnemicrobiota",
+                  "qiime2R", "ranacapa")
+                  
+#Load libraries
+sapply(c(cran_packages, bioc_packages, git_packages), require, character.only = TRUE)
+
+
+```
+
+
+### Import data to R from qiime and check prevalence to filter data
+
+```{r}
+# 01. Load data
+physeq_qiime2 <- qza_to_phyloseq(
+  features = "/axolote/diana/manglares/v0.2/results/04.qiime/ASV_table_filter_freq218_aemc.qza",
+  tree = "/axolote/diana/manglares/v0.2/results/04.qiime/rooted-tree-iqtree.qza",
+  taxonomy = "/axolote/diana/manglares/v0.2/results/04.qiime/taxonomy.qza",
+  metadata = "/axolote/diana/manglares/v0.2/data/metadata.tsv")
+```
+
+```{r}
+physeq_qiime2
+```
+
+
+```{r}
+# Cargar las librerías necesarias
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+# Cargar los datos
+meta <- sample_data(physeq_qiime2)
+
+# Crear la tabla de contingencia
+table <- table(meta$Site, meta$Depth_cm)
+
+# Convertir la tabla en un data frame para ggplot
+table_df <- as.data.frame(table)
+names(table_df) <- c("Site", "Depth_cm", "Count")
+
+# Gráfico de barras
+samples_plot <- ggplot(table_df, aes(x = Site, y = Count, fill = Depth_cm)) +
+  geom_bar(stat="identity", position="dodge") +
+  labs(title = "Samples by Site and Depth", y = "Number of Samples") +
+  theme_bw() + scale_color_lancet() + scale_fill_lancet()
+
+# Mostrar el gráfico
+samples_plot
+```
+
+
+```{r}
+# 02. Explore prevalence
+## 02.1 Get prevalence
+prevdf = apply(X = otu_table(physeq_qiime2),
+               MARGIN = ifelse(taxa_are_rows(physeq_qiime2), yes = 1, no = 2),
+               FUN = function(x){sum(x > 0)})
+## 02.2 Add taxonomy
+prevdf = data.frame(Prevalence = prevdf,
+                    TotalAbundance = taxa_sums(physeq_qiime2),
+                    tax_table(physeq_qiime2))
+## 02.3 Check prevalence at Phylum level
+dfprev <- plyr::ddply(prevdf, "Phylum", function(df1){cbind(mean(df1$Prevalence),sum(df1$Prevalence))})
+
+## 02.4 Get genus prevalence plot
+prevalence_genus = subset(prevdf, Genus %in% get_taxa_unique(physeq_qiime2, "Genus"))
+prev_genus <- ggplot(prevalence_genus, aes(TotalAbundance, 
+  Prevalence /nsamples(physeq_qiime2),color=Genus)) +
+  geom_hline(yintercept = 0.05, alpha = 0.5, linetype = 2) + 
+  geom_point(size = 1.5, alpha = 0.7) + theme_bw() +
+  scale_x_log10() +  xlab("Total Abundance") + ylab("Prevalence") +
+  facet_wrap(~Phylum) + theme(legend.position="none")
+
+#save prevalence plot
+#pdf("results/plots/03.diversity/01.Prevalence_Phylum_and_genus.pdf")
+prev_genus
+#dev.off()
+```
+
+### Check sample effort
+
+``` r
+#Acumulation curves
+#library(ranacapa)
+## 03.2 Get accumulation curves
+acumulation_curves <- ggrare(physeq_qiime2, step = 100, color = "Site", label = "Sample")
+
+#custom plot
+acumulation_curves_plot <- acumulation_curves + facet_wrap(~Site) +
+  labs(title="Accumulative curves") + theme_bw() + scale_color_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2")
+
+#save plot
+pdf("../results/plots/Rarefaction_curves_ranacapa.pdf")
+acumulation_curves_plot
+dev.off()
+
+acumulation_curves_plot
+ggsave("../results/plots/Rarefaction_curves_ranacapa.png")
+```
+
+```{r}
+acumulation_curves_plot
+```
+
+
+
+
+```{r}
+## Abundances
+### 0.6  abundances
+library(ampvis2)
+# Necesitamos extraer la tabla de read counts y la tabla de taxonomía del objeto physeq_filter_phyla
+# Extraemos las tablas
+otu_table_ampvis <- data.frame(OTU = rownames(phyloseq::otu_table(physeq_qiime2)@.Data),
+                               phyloseq::otu_table(physeq_qiime2)@.Data,
+                               phyloseq::tax_table(physeq_qiime2)@.Data,
+                               check.names = FALSE
+)
+```
+
+```{r}
+# Metadada
+meta_data_ampvis <- data.frame(phyloseq::sample_data(physeq_qiime2),
+                               check.names = FALSE
+)
+#  cambiamos el indice por una columna que se llame SampleID
+
+meta_data_ampvis <- meta_data_ampvis %>% rownames_to_column(var = "SampleID")
+```
+
+```{r}
+# ampvis object
+av2 <- amp_load(otu_table_ampvis, meta_data_ampvis)
+```
+
+```{r}
+#heatmap abundances
+ampv_heatmap_abundances_genus_site_depth <- amp_heatmap(av2,
+            group_by = "Depth_cm",
+            facet_by = "Site",
+            plot_values = TRUE,
+            tax_show = 20,
+            tax_aggregate = "Genus",
+            #tax_add = "Family",
+            plot_colorscale = "log10",
+            plot_legendbreaks = c(1, 5, 5),
+            color_vector = c("white","deepskyblue3","magenta3")
+)
+ampv_heatmap_abundances_genus_site_depth
+
+```
+
+```{r}
+ampv_heatmap_abundances_genus_site <- amp_heatmap(av2,
+            group_by = "Site",
+            plot_values = TRUE,
+            tax_show = 20,
+            tax_aggregate = "Genus",
+            plot_colorscale = "log10",
+            plot_legendbreaks = c(1, 5, 5),
+            color_vector = c("white","deepskyblue3","magenta3")
+)
+ampv_heatmap_abundances_genus_loc_site
+```
+
+```{r}
+ampv_heatmap_abundances_genus_site_sample <- amp_heatmap(av2,
+            #group_by = "Sample",
+            facet_by = "Site",
+            plot_values = TRUE,
+            tax_show = 20,
+            tax_aggregate = "Genus",
+            #tax_add = "Family",
+            plot_colorscale = "sqrt",
+            plot_legendbreaks = c(1, 5, 5),
+            color_vector = c("white","deepskyblue3","magenta3")
+)
+ampv_heatmap_abundances_genus_site_sample
+```
+
+
+```{r}
+ampv_heatmap_abundances_family_site <- amp_heatmap(av2,
+            group_by = "Site",
+            #facet_by = "Location",
+            plot_values = TRUE,
+            tax_show = 20,
+            tax_aggregate = "Family",
+            tax_add = "Phylum",
+            plot_colorscale = "log10",
+            plot_legendbreaks = c(1, 5, 5),
+            color_vector = c("white","deepskyblue3","magenta3")
+)
+```
+
+```{r}
+ampv_heatmap_abundances_family_site
+```
+
+```{r}
+ampv_heatmap_abundances_family_sample <- amp_heatmap(av2,
+            #group_by = "Site",
+            facet_by = "Site",
+            plot_values = TRUE,
+            tax_show = 20,
+            tax_aggregate = "Family",
+            tax_add = "Phylum",
+            plot_colorscale = "log10",
+            plot_legendbreaks = c(1, 5, 5),
+            color_vector = c("white","deepskyblue3","magenta3")
+)
+ampv_heatmap_abundances_family_sample
+```
+
+```{r}
+ampv_heatmap_abundances_family_depth_site <- amp_heatmap(av2,
+            group_by = "Depth_cm",
+            facet_by = "Site",
+            plot_values = TRUE,
+            tax_show = 20,
+            tax_aggregate = "Family",
+            tax_add = "Phylum",
+            plot_colorscale = "log10",
+            plot_legendbreaks = c(1, 5, 5),
+            color_vector = c("white","deepskyblue3","magenta3")
+)
+ampv_heatmap_abundances_family_depth_site
+```
+
+```{r}
+ampv_heatmap_abundances_phylum_depth_site <- amp_heatmap(av2,
+            group_by = "Depth_cm",
+            facet_by = "Site",
+            plot_values = TRUE,
+            tax_show = 20,
+            tax_aggregate = "Phylum",
+            plot_colorscale = "log10",
+            plot_legendbreaks = c(1, 5, 5),
+            color_vector = c("white","deepskyblue3","magenta3")
+)
+ampv_heatmap_abundances_phylum_depth_site
+```
+
+```{r}
+ampv_heatmap_abundances_phylum_site_samp <- amp_heatmap(av2,
+            #group_by = "Depth_cm",
+            facet_by = "Site",
+            plot_values = TRUE,
+            tax_show = 20,
+            tax_aggregate = "Phylum",
+            plot_colorscale = "log10",
+            plot_legendbreaks = c(1, 5, 5),
+            color_vector = c("white","deepskyblue3","magenta3")
+)
+ampv_heatmap_abundances_phylum_site_samp
+```
+
+
+### Beta diversity
+
+#### Bray-curtis
+
+```{r}
+# ANOSIM Location
+#extract metadata
+metadata <- data.frame(phyloseq::sample_data(physeq_qiime2),
+           check.names = FALSE)
+#get significant difference between location with anosim
+anosim_location <- anosim(x= as.data.frame(t(otu_table(physeq_qiime2))),
+       grouping = metadata$Location,
+       permutations = 9999, distance = "bray")
+```
+
+```{r}
+anosim_location
+```
+
+```{r}
+# Bray NMDS 
+nmds_bray <- ordinate(physeq_qiime2, method = "NMDS", distance = "bray")
+# Get stress value
+var_stress_nmds_bray <- round(nmds_bray$stress, 5)
+
+#checks that the fit is good with shepard plot
+stressplot(nmds_bray)
+
+nmds_bray_plot <- plot_ordination(physeq_qiime2, nmds_bray, label = "Sample",
+                           color = "Location", shape = "Location") + 
+  labs(col = "Location") + geom_point(size=3) + theme_bw()+ 
+  labs(title="NMDS, Bray-Curtis distance\nANOSIM Location: R=0.3679, p=0.0001, Permutations=9999") + scale_color_npg()+ scale_fill_npg()
+  
+
+nmds_bray_plot <- nmds_bray_plot +
+  annotate("text", x = Inf, y = -Inf, label = paste("Stress:", var_stress_nmds_bray),
+           hjust = 2.1, vjust = -1.9, size = 4)
+nmds_bray_plot
+```
+
+
+```{r}
+#### Bray-Curtis depth
+#extract metadata
+metadata <- data.frame(phyloseq::sample_data(physeq_qiime2),
+           check.names = FALSE)
+
+#get significant difference between Depth with anosim
+anosim_depth <- anosim(x= as.data.frame(t(otu_table(physeq_qiime2))),
+       grouping = metadata$Depth,
+       permutations = 9999, distance = "bray")
+
+anosim_depth
+```
+
+```{r}
+nmds_bray_depth_plot <- plot_ordination(physeq_qiime2, nmds_bray, label = "Sample",
+                           color = "Depth_cm", shape = "Location") + theme_bw() + 
+  labs(col = "Depth") + labs(title="NMDS, Bray-Curtis distance\nANOSIM Depth: R=0.1403, p=0.0018, Permutations=9999") + scale_color_lancet() +
+  scale_fill_lancet() + geom_point(size=3)
+nmds_bray_depth_plot <- nmds_bray_depth_plot +
+  annotate("text", x = Inf, y = -Inf, label = paste("Stress:", var_stress_nmds_bray),
+           hjust = 2.1, vjust = -1.9, size = 4)
+nmds_bray_depth_plot
+```
+
+
+
+```{r}
+##### Site
+#get significant difference between Depth with anosim
+anosim_site <- anosim(x= as.data.frame(t(otu_table(physeq_qiime2))),
+       grouping = metadata$Site,
+       permutations = 9999, distance = "bray")
+
+anosim_site
+
+```
+
+```{r}
+nmds_bray_site_plot <- plot_ordination(physeq_qiime2, nmds_bray, label = "Sample",
+                           color = "Site", shape = "Depth_cm") + theme_bw() + 
+  labs(col = "site") + labs(title="NMDS, Bray-Curtis distance\nANOSIM Site: R=0.4168, p=0.0001, Permutations=9999") + geom_point(size=3) + scale_color_aaas()+
+  scale_fill_aaas()
+
+nmds_bray_site_plot <- nmds_bray_site_plot +
+  annotate("text", x = Inf, y = -Inf, label = paste("Stress:", var_stress_nmds_bray),
+           hjust = 2.1, vjust = -1.9, size = 4)
+
+nmds_bray_site_plot
+```
+
+
+```{r}
+
+#### Weighted Unifraq
+
+    #Weigthed UniFrac take relative abundance and it is less sensitive to sample size 
+
+    nmds_wunifrac <- ordinate(physeq_qiime2, method = "NMDS", distance = "wunifrac")
+    # stress variable
+    var_stress_nmds_wu <- round(nmds_wunifrac$stress, 5)
+
+    stressplot(nmds_wunifrac)# checks that the fit is good
+    #nmds_wunifrac$points
+
+    # Weigthed UniFrac NMDS
+    nmds_wu <- plot_ordination(physeq_qiime2, nmds_wunifrac, label = "Sample",
+                               color = "Location", shape = "Location") + theme_bw() + 
+      labs(col = "Location") + 
+      labs(title="NMDS, Weighted UniFrac distance") +
+      geom_point(size=3) + scale_color_npg()+ scale_fill_npg()
+
+    nmds_wu <- nmds_wu +
+      annotate("text", x = Inf, y = -Inf, label = paste("Stress:", var_stress_nmds_wu),
+               hjust = 1.1, vjust = -1.1, size = 4)
+nmds_wu
+```
+
+```{r}
+ # Weigthed UniFrac NMDS
+nmds_wu_depth <- plot_ordination(physeq_qiime2, nmds_wunifrac, label = "Sample",
+                               color = "Depth_cm", shape = "Location") + theme_bw() + 
+      labs(col = "Location") + 
+      labs(title="NMDS, Weighted UniFrac distance") +
+      geom_point(size=3) + scale_color_lancet()+ scale_fill_lancet()
+
+    nmds_wu <- nmds_wu +
+      annotate("text", x = Inf, y = -Inf, label = paste("Stress:", var_stress_nmds_wu),
+               hjust = 1.1, vjust = -1.1, size = 4)
+nmds_wu_depth
+```
+```{r}
+ # Weigthed UniFrac NMDS
+nmds_wu_depth_site <- plot_ordination(physeq_qiime2, nmds_wunifrac, label = "Sample",
+                               color = "Site", shape = "Depth_cm") + theme_bw() + 
+      labs(col = "Location") + 
+      labs(title="NMDS, Weighted UniFrac distance") +
+      geom_point(size=3) + scale_color_aaas()+ scale_fill_aaas()
+nmds_wu_depth_site <- nmds_wu_depth_site +
+      annotate("text", x = Inf, y = -Inf, label = paste("Stress:", var_stress_nmds_wu),
+               hjust = 1.1, vjust = -1.1, size = 4)
+nmds_wu_depth_site
+```
+
+
+### Alpha diversity
+
+```{r}
+#Get diversity index
+diversity_all_index <- microbiome::alpha(physeq_qiime2, index = "all")
+#save table
+#write.table(diversity_all_index, "results/05.postprocess/all_alpha_index.tsv", col.names=NA, sep="\t")
+```
+
+```{r}
+#### obs and shannon
+
+### Get simple alpha diversity plots by location, practices, and both
+
+alpha_depth_plot <- plot_richness(physeq_qiime2, color = "Depth_cm", x = "Depth_cm", 
+                                  measures = c("Observed", "Shannon", "Simpson")) +
+  geom_boxplot(aes(fill = Depth_cm), alpha=.7) + scale_color_lancet() +
+  scale_fill_lancet() + theme_bw()
+
+alpha_location_plot <- plot_richness(physeq_qiime2, color = "Location", x = "Location", 
+                                     measures = c("Observed", "Shannon", "Simpson")) +
+  geom_boxplot(aes(fill = Location), alpha=.7) + scale_color_npg() +
+  scale_fill_npg() + theme_bw() + theme(axis.text.x  = element_text(angle = 10))
+
+alpha_site_plot <- plot_richness(physeq_qiime2, color = "Site", x = "Site", 
+                                 measures = c("Observed", "Shannon", "Simpson")) +
+  geom_boxplot(aes(fill = Site), alpha=.7) + scale_color_aaas() +
+  scale_fill_aaas() +theme_bw() + theme(axis.text.x  = element_text(angle = 10))
+
+alpha_site_and_depth_plot <-plot_richness(physeq_qiime2, color = "Depth_cm", x = "Site", 
+                                          measures = c("Observed", "Shannon", "Simpson")) +
+  geom_boxplot(aes(fill = Depth_cm), alpha=.7) + scale_color_lancet() +
+  scale_fill_lancet() + theme_bw() + theme(axis.text.x  = element_text(angle = 10))
+
+```
+
+```{r}
+alpha_depth_plot
+```
+
+```{r}
+alpha_location_plot
+```
+
+```{r}
+alpha_site_plot
+```
+
+```{r}
+alpha_site_and_depth_plot
+```
+
+```{r}
+save.image("Postprocess.RData")
+```
+
+
+
+#### Get Observed, shannon, Faith and Pielou
+
+    # Estimate faith diversity
+    alpha_pd <- estimate_pd(physeq_qiime2)
+
+    #Calculating Faiths PD-index...
+    alpha_pd
+
+    ### get specific index diversity with metadata 
+    physeq_with_metadata <- meta(physeq_qiime2)
+
+    #Add specific diversity index to metadata
+    physeq_with_metadata$Shannon <- diversity_all_index$diversity_shannon
+    physeq_with_metadata$Observed <- diversity_all_index$observed
+    physeq_with_metadata$Pielou <- diversity_all_index$evenness_pielou
+    physeq_with_metadata$Faith <- alpha_pd$PD #faith
+
+    #save table
+    #write.table(as.data.frame(physeq_with_metadata), "results/05.postprocess/metadata_with_specific_alpha_index_table.tsv", sep="\t")
+
+    meta_div <- as.data.frame(physeq_with_metadata)
+    sites <- unique(meta_div$Site)
+    sites_par <- combn(seq_along(sites), 2, simplify = FALSE, FUN = function(i)sites[i])
+
+    print(sites_par)
+
+
+    sites_shannon <- ggboxplot(physeq_with_metadata, x = "Site", y = "Shannon",
+                               fill = "Site") + scale_color_brewer(palette  = "Set1")+ 
+                    scale_fill_brewer(palette  = "Set1")+ theme_bw()
+
+    sites_shannon
+
+
+    sites_shannon_sig <- sites_shannon + stat_compare_means(comparisons = sites_par)
+    sites_shannon_sig
