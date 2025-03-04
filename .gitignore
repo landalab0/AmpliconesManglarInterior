@@ -1,7 +1,0 @@
-*.RData
-*.gz
-*.fastq
-*.qza
-*.biom
-*.zip
-.Rproj.user
