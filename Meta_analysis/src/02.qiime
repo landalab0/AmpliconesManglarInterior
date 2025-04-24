@@ -1,0 +1,49 @@
+#Run in qiime conda environment
+#conda activate qiime2-2023.5
+#Repeat with every ASV_table (Celestún, Estero Pargo and San Pedro River)
+#import rep seqs
+qiime tools import --input-path results/03.Dada2/ASVs.fasta --type 'FeatureData[Sequence]' --output-path results/04.qiime/ASV_rep_seq.qza
+# append missing header to the table for import
+cat <(echo -n "#OTU Table") results/03.Dada2/ASV_to_seqs-nochim.tsv > temp.txt
+# convert to biom
+biom convert -i temp.txt -o temp.biom --table-type="OTU table" --to-hdf5
+# and create table-type qza
+qiime tools import --input-path temp.biom --type 'FeatureTable[Frequency]' --input-format BIOMV210Format --output-path results/04.qiime/ASV_table.qza
+# remove temporal files
+rm temp.*
+#Merge of the frequency tables from distinct analysis
+qiime feature-table merge 
+--i-tables ASV_table_Celestun.qza ASV_table_Estero.qza ASV_table_SanPedro.qza --p-overlap-method sum 
+--o-merged-table merged-table.qza
+#Merge of the Representative sequences from distinct analysis 
+qiime feature-table merge-seqs 
+--i-data ASV_Celestun_rep_seq.qza ASV_Estero_rep_seq.qza ASV_SanPedro_rep_seq.qza 
+--o-merged-data merged-rep_seqs.qza
+#Closed reference clustering for Meta-Analysis
+qiime vsearch cluster-features-closed-reference   
+--i-table merged-table.qza   
+--i-sequences merged-rep_seqs.qza   
+--i-reference-sequences silva-138-99-seqs.qza   
+--p-perc-identity 0.97   
+--o-clustered-table table-cr-97.qza   
+--o-clustered-sequences rep-seqs-cr-97.qza   
+--o-unmatched-sequences unmatched-cr-97.qza
+#Taxonomy assignment with SILVA
+ qiime feature-classifier classify-sklearn   
+--i-classifier classifier_silva_138_trained.qza   
+--i-reads rep-seqs-cr-97.qza    
+--o-classification taxonomyEstero.qza 
+--p-n-jobs 40
+#Filter by frequency
+
+qiime feature-table filter-features --i-table  merged_table.qza 
+--p-min-samples 1 
+--p-min-frequency 218 
+--o-filtered-table clustered_table_filter_freq218.qza
+#Filter Mitochondria, chloroplast and Eukaryota
+qiime taxa filter-table 
+--i-table Clustered_table_filter_freq218.qza 
+--i-taxonomy taxonomy.qza 
+--p-exclude Eukaryota,Mitochondria,Chloroplast  
+--p-include p__ 
+--o-filtered-table clustered_table_filter_freq218_emcEstero.qza
